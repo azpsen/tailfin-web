@@ -1,17 +1,80 @@
+import "@mantine/core/styles.css";
+
 import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction } from "@remix-run/node";
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
 } from "@remix-run/react";
+
+import {
+  Button,
+  ColorSchemeScript,
+  Container,
+  Group,
+  MantineProvider,
+  Stack,
+  Title,
+} from "@mantine/core";
+import { TailfinAppShell } from "./ui/nav/app-shell";
+import { IconRocket } from "@tabler/icons-react";
+import Providers from "./providers";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  return (
+    <html lang="en">
+      <head>
+        <title>Oops!</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+        <ColorSchemeScript />
+      </head>
+      <body>
+        <MantineProvider>
+          <Container>
+            <Stack>
+              <Title order={2} pt="xl" style={{ textAlign: "center" }}>
+                {isRouteErrorResponse(error)
+                  ? `Error ${error.status} - ${error.statusText}`
+                  : error instanceof Error
+                  ? error.message
+                  : "Unknown Error"}
+              </Title>
+              <Group justify="center">
+                <Button
+                  leftSection={<IconRocket />}
+                  component={Link}
+                  to="/"
+                  variant="default"
+                >
+                  Get me out of here!
+                </Button>
+              </Group>
+            </Stack>
+          </Container>
+        </MantineProvider>
+      </body>
+    </html>
+  );
+}
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
@@ -21,12 +84,18 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <ColorSchemeScript />
       </head>
       <body>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider theme={{ primaryColor: "violet" }}>
+            <Outlet />
+            <ScrollRestoration />
+            <Scripts />
+            <LiveReload />
+          </MantineProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </body>
     </html>
   );
