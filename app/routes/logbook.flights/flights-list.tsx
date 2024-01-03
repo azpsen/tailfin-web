@@ -1,6 +1,15 @@
 import { client } from "@/util/api";
 import { FlightConciseSchema } from "@/util/types";
-import { NavLink, Text, Button, ScrollArea, Stack } from "@mantine/core";
+import {
+  NavLink,
+  Text,
+  Button,
+  ScrollArea,
+  Stack,
+  Loader,
+  Center,
+  Container,
+} from "@mantine/core";
 import { Link, useLocation, useNavigate } from "@remix-run/react";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +35,7 @@ export function FlightsList() {
       >
         Add
       </Button>
-      <ScrollArea>
+      <ScrollArea h="calc(100vh - 95px - 50px)">
         {flights.data ? (
           flights.data.map((flight: FlightConciseSchema, index: number) => (
             <NavLink
@@ -37,6 +46,10 @@ export function FlightsList() {
               active={page === flight.id}
             />
           ))
+        ) : flights.isLoading ? (
+          <Center h="calc(100vh - 95px - 50px)">
+            <Loader />
+          </Center>
         ) : (
           <Text p="sm">No Flights</Text>
         )}
@@ -69,6 +82,10 @@ export function MobileFlightsList() {
               active={page === flight.id}
             />
           ))
+        ) : flights.isLoading ? (
+          <Center h="calc(100vh - 95px - 70px)">
+            <Loader />
+          </Center>
         ) : (
           <Text p="sm">No Flights</Text>
         )}
