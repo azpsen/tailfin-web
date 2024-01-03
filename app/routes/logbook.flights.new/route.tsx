@@ -21,7 +21,7 @@ import { FlightFormSchema, flightCreateHelper } from "@/util/types";
 import { HourInput, ZeroHourInput } from "@/ui/form/hour-input";
 import { ZeroIntInput } from "@/ui/form/int-input";
 import ListInput from "@/ui/form/list-input";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "@/util/api";
 import { useNavigate } from "@remix-run/react";
 
@@ -77,15 +77,21 @@ export default function NewFlight() {
   });
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const createFlight = useMutation({
     mutationFn: async (values: FlightFormSchema) => {
       const newFlight = flightCreateHelper(values);
       const res = await client.post("/flights", newFlight);
-      navigate(`/logbook/flights/${res.data.id}`);
+      console.log(res);
+      return res.data;
     },
     onError: (error) => {
       console.log(error);
+    },
+    onSuccess: async (data: { id: string }) => {
+      await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
+      navigate(`/logbook/flights/${data.id}`);
     },
   });
 
