@@ -31,6 +31,24 @@ import { IconRocket } from "@tabler/icons-react";
 import { AuthProvider } from "./util/auth";
 
 export const links: LinksFunction = () => [
+  {
+    rel: "apple-touch-icon",
+    href: "/favicon/apple-touch-icon.png",
+    sizes: "180x180",
+  },
+  {
+    rel: "icon",
+    href: "/favicon/favicon-32x32.png",
+    type: "image/png",
+    sizes: "32x32",
+  },
+  {
+    rel: "icon",
+    href: "/favicon/favicon-16x1166.png",
+    type: "image/png",
+    sizes: "16x16",
+  },
+  { rel: "manifest", href: "/favicon/site.webmanifest" },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
