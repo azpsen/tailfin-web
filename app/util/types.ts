@@ -1,8 +1,9 @@
-type Flight = {
-  id: string;
-  user: string;
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
 
-  date: string;
+dayjs.extend(utc);
+
+type FlightBaseSchema = {
   aircraft: string | null;
   waypoint_from: string | null;
   waypoint_to: string | null;
@@ -49,4 +50,49 @@ type Flight = {
   comments: string;
 };
 
-export { type Flight };
+type FlightFormSchema = FlightBaseSchema & {
+  date: dayjs.Dayjs;
+};
+
+type FlightCreateSchema = FlightBaseSchema & {
+  date: string;
+};
+
+type FlightDisplaySchema = FlightBaseSchema & {
+  id: string;
+  user: string;
+  date: dayjs.Dayjs;
+};
+
+type FlightConciseSchema = {
+  user: string;
+  id: string;
+
+  date: dayjs.Dayjs;
+  aircraft: string;
+  waypoint_from: string;
+  waypoint_to: string;
+
+  time_total: number;
+
+  comments: string;
+};
+
+const flightCreateHelper = (values: FlightFormSchema): FlightCreateSchema => {
+  return {
+    ...values,
+    date: values.date.utc().startOf("day").toISOString(),
+    hobbs_start: Number(values.hobbs_start),
+    hobbs_end: Number(values.hobbs_end),
+    tach_start: Number(values.tach_start),
+    tach_end: Number(values.tach_end),
+  };
+};
+
+export {
+  flightCreateHelper,
+  type FlightFormSchema,
+  type FlightCreateSchema,
+  type FlightDisplaySchema,
+  type FlightConciseSchema,
+};

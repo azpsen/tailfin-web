@@ -1,4 +1,4 @@
-import { Divider, Grid, Container } from "@mantine/core";
+import { Divider, Grid, Container, ScrollAreaAutosize } from "@mantine/core";
 import { Outlet } from "@remix-run/react";
 import { FlightsList } from "./flights-list";
 
@@ -11,7 +11,9 @@ export default function FlightsLayout() {
         </Grid.Col>
         <Divider orientation="vertical" m="sm" />
         <Grid.Col span="auto">
-          <Outlet />
+          <ScrollAreaAutosize mah="calc(100vh - 95px)">
+            <Outlet />
+          </ScrollAreaAutosize>
         </Grid.Col>
       </Grid>
       <Container hiddenFrom="md">

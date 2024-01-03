@@ -91,6 +91,7 @@ function useProvideAuth() {
       .get("/users/me")
       .then((response) => handleUser(response.data.username))
       .catch(() => handleUser(null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
