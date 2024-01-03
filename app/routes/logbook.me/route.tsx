@@ -1,12 +1,12 @@
-import { useMe } from "@/util/hooks";
+import { useAuth } from "@/util/auth";
 import { Container, Title } from "@mantine/core";
 
 export default function Me() {
-  const me = useMe();
+  const { user } = useAuth();
 
   return (
     <Container>
-      <Title order={2}>{me.data?.username}</Title>
+      <Title order={2}>{user}</Title>
     </Container>
   );
 }

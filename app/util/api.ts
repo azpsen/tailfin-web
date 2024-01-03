@@ -1,3 +1,4 @@
+import { useNavigate } from "@remix-run/react";
 import axios from "axios";
 
 export const client = axios.create({
@@ -13,15 +14,9 @@ client.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-client.interceptors.request.use(
-  (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const navigate = useNavigate();
     if (error.response.status == 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem("refresh-token");
@@ -36,7 +31,10 @@ client.interceptors.request.use(
           ] = `Bearer ${data.refreshToken}`;
           return client(originalRequest);
         } catch (_error) {
-          return Promise.reject(_error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("refresh-token");
+          console.log("Oh no!!!");
+          navigate("/login");
         }
       }
     }

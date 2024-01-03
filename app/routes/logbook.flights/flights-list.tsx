@@ -1,20 +1,11 @@
 import { client } from "@/util/api";
-import {
-  Divider,
-  NavLink,
-  Text,
-  Container,
-  Button,
-  ScrollArea,
-  Stack,
-} from "@mantine/core";
+import { Flight } from "@/util/types";
+import { NavLink, Text, Button, ScrollArea, Stack } from "@mantine/core";
 import { Link, useLocation } from "@remix-run/react";
 import { IconPlus } from "@tabler/icons-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export function FlightsList() {
-  const queryClient = useQueryClient();
-
   const flights = useQuery({
     queryKey: ["flights-list"],
     queryFn: () => client.get(`/flights`).then((res) => res.data),
@@ -30,7 +21,7 @@ export function FlightsList() {
       </Button>
       <ScrollArea>
         {flights.data ? (
-          flights.data.map((flight, index) => (
+          flights.data.map((flight: Flight, index: number) => (
             <NavLink
               key={index}
               component={Link}
@@ -48,8 +39,6 @@ export function FlightsList() {
 }
 
 export function MobileFlightsList() {
-  const queryClient = useQueryClient();
-
   const flights = useQuery({
     queryKey: ["flights-list"],
     queryFn: () => client.get(`/flights`).then((res) => res.data),
@@ -62,7 +51,7 @@ export function MobileFlightsList() {
     <Stack p="0" m="0" justify="space-between" h="calc(100vh - 95px)">
       <ScrollArea h="calc(100vh - 95px - 50px">
         {flights.data ? (
-          flights.data.map((flight, index) => (
+          flights.data.map((flight: Flight, index: number) => (
             <NavLink
               key={index}
               component={Link}

@@ -14,6 +14,9 @@ import {
   useRouteError,
 } from "@remix-run/react";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import {
   Button,
   ColorSchemeScript,
@@ -23,11 +26,9 @@ import {
   Stack,
   Title,
 } from "@mantine/core";
-import { TailfinAppShell } from "./ui/nav/app-shell";
 import { IconRocket } from "@tabler/icons-react";
-import Providers from "./providers";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { AuthProvider } from "./util/auth";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -60,7 +61,7 @@ export function ErrorBoundary() {
                 <Button
                   leftSection={<IconRocket />}
                   component={Link}
-                  to="/"
+                  to="/logbook"
                   variant="default"
                 >
                   Get me out of here!
@@ -89,10 +90,12 @@ export default function App() {
       <body>
         <QueryClientProvider client={queryClient}>
           <MantineProvider theme={{ primaryColor: "violet" }}>
-            <Outlet />
-            <ScrollRestoration />
-            <Scripts />
-            <LiveReload />
+            <AuthProvider>
+              <Outlet />
+              <ScrollRestoration />
+              <Scripts />
+              <LiveReload />
+            </AuthProvider>
           </MantineProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

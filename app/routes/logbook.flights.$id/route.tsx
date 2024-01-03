@@ -1,12 +1,11 @@
 import { client } from "@/util/api";
 import { List, Stack, Text } from "@mantine/core";
 import { useParams } from "@remix-run/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Flight() {
   const params = useParams();
 
-  const queryClient = useQueryClient();
   const flight = useQuery({
     queryKey: [params.id],
     queryFn: async () =>

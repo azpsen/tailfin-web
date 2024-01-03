@@ -1,5 +1,4 @@
-import { client } from "@/util/api";
-import { useLogin } from "@/util/hooks";
+import { useAuth } from "@/util/auth";
 import {
   Box,
   Button,
@@ -19,7 +18,7 @@ export default function Login() {
     },
   });
 
-  const signInMutation = useLogin();
+  const { signin } = useAuth();
 
   return (
     <Stack gap="md" h="100%" justify="center" align="stretch">
@@ -29,7 +28,7 @@ export default function Login() {
       <Box maw={340} mx="auto">
         <form
           onSubmit={form.onSubmit((values) => {
-            signInMutation(values);
+            signin(values);
           })}
         >
           <TextInput

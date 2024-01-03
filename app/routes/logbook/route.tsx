@@ -1,6 +1,8 @@
 import { TailfinAppShell } from "@/ui/nav/app-shell";
+import { useAuth } from "@/util/auth";
 import type { MetaFunction } from "@remix-run/node";
-import { Outlet } from "@remix-run/react";
+import { Outlet, useNavigate } from "@remix-run/react";
+import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,11 +12,20 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("loading: " + loading);
+    console.log("user: " + user);
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <TailfinAppShell>
-        <Outlet />
-      </TailfinAppShell>
-    </div>
+    <TailfinAppShell>
+      <Outlet />
+    </TailfinAppShell>
   );
 }

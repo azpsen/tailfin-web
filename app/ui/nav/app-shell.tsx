@@ -4,7 +4,6 @@ import {
   Group,
   Title,
   UnstyledButton,
-  Image,
   Avatar,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";

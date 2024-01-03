@@ -1,10 +1,9 @@
-import { useMe, useSignOut } from "@/util/hooks";
-import { Stack, NavLink, ActionIcon } from "@mantine/core";
+import { useAuth } from "@/util/auth";
+import { Stack, NavLink } from "@mantine/core";
 import { Link, useLocation } from "@remix-run/react";
 import {
   IconBook2,
   IconLogout,
-  IconMapRoute,
   IconPlaneDeparture,
   IconUser,
 } from "@tabler/icons-react";
@@ -13,8 +12,7 @@ export default function Navbar() {
   const location = useLocation();
   const page = location.pathname.split("/")[2];
 
-  const me = useMe();
-  const signOut = useSignOut();
+  const { user, signout } = useAuth();
 
   return (
     <Stack justify="space-between" h="100%">
@@ -39,13 +37,7 @@ export default function Navbar() {
       <Stack gap="0">
         <NavLink
           p="md"
-          label={
-            me.isError
-              ? me.error.message
-              : me.isFetched
-              ? me.data?.username
-              : "Not Logged In"
-          }
+          label={user ? user : "Not Logged In"}
           leftSection={<IconUser />}
         >
           <NavLink
@@ -57,7 +49,7 @@ export default function Navbar() {
           />
           <NavLink
             p="md"
-            onClick={() => signOut()}
+            onClick={() => signout()}
             label="Sign Out"
             leftSection={<IconLogout />}
           />
