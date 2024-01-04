@@ -13,6 +13,7 @@ interface AuthContextValues {
     password: string;
   }) => void;
   signout: () => void;
+  clearUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextValues | null>(null);
@@ -86,6 +87,10 @@ function useProvideAuth() {
     return await client.post("/auth/logout").then(() => handleUser(null));
   };
 
+  const clearUser = () => {
+    handleUser(null);
+  };
+
   useEffect(() => {
     client
       .get("/users/me")
@@ -99,5 +104,6 @@ function useProvideAuth() {
     loading,
     signin,
     signout,
+    clearUser,
   };
 }

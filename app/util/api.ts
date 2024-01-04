@@ -1,5 +1,5 @@
-import { useNavigate } from "@remix-run/react";
 import axios from "axios";
+import { useAuth } from "./auth";
 
 export const client = axios.create({
   baseURL: "http://localhost:8081",
@@ -15,27 +15,21 @@ client.interceptors.request.use(
     return config;
   },
   async (error) => {
-    const originalRequest = error.config;
-    const navigate = useNavigate();
-    if (error.response.status == 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const refreshToken = localStorage.getItem("refresh-token");
-      if (refreshToken) {
-        try {
-          const { data } = await client.post("/auth/refresh", {
-            refresh: refreshToken,
-          });
-          localStorage.setItem("token", data.refreshToken);
-          client.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${data.refreshToken}`;
-          return client(originalRequest);
-        } catch (_error) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("refresh-token");
-          console.log("Oh no!!!");
-          navigate("/login");
-        }
+    const { clearUser } = useAuth();
+    console.log(error.response);
+    if (error.response && error.response.status === 401) {
+      try {
+        const refreshToken = localStorage.getItem("refresh-token");
+        const response = await client.post("/auth/refresh", { refreshToken });
+        const newAccessToken = response.data.access_token;
+
+        localStorage.setItem("token", newAccessToken);
+        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+        return client(error.config);
+      } catch (err) {
+        console.log("ERRORRRRRRRRRRRRRR");
+        clearUser();
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);

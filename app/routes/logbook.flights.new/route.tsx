@@ -5,7 +5,6 @@ import {
   Fieldset,
   Group,
   NumberInput,
-  ScrollArea,
   ScrollAreaAutosize,
   Stack,
   TextInput,
@@ -85,6 +84,9 @@ export default function NewFlight() {
       const res = await client.post("/flights", newFlight);
       console.log(res);
       return res.data;
+    },
+    retry: (failureCount, error) => {
+      return !error || error.response?.status !== 401;
     },
     onError: (error) => {
       console.log(error);

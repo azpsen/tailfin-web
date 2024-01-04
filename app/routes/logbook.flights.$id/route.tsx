@@ -1,7 +1,10 @@
 import { client } from "@/util/api";
+import { useAuth } from "@/util/auth";
 import { Center, Container, List, Loader, Stack, Text } from "@mantine/core";
-import { useParams } from "@remix-run/react";
+import { useNavigate, useParams } from "@remix-run/react";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export default function Flight() {
   const params = useParams();
@@ -10,7 +13,20 @@ export default function Flight() {
     queryKey: [params.id],
     queryFn: async () =>
       await client.get(`/flights/${params.id}`).then((res) => res.data),
+    retry: (failureCount, error) => {
+      return !error || error.response?.status !== 401;
+    },
   });
+
+  const navigate = useNavigate();
+  const { clearUser } = useAuth();
+
+  useEffect(() => {
+    if (flight.isError && flight.error.response.status === 401) {
+      clearUser();
+      navigate("/login");
+    }
+  }, [flight]);
 
   return (
     <Container>

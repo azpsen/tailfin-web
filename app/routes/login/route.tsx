@@ -12,6 +12,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useEffect } from "react";
 
 export default function Login() {
   const form = useForm({
@@ -22,6 +23,10 @@ export default function Login() {
   });
 
   const { signin } = useAuth();
+
+  useEffect(() => {
+    document.title = "Log In - Tailfin";
+  });
 
   return (
     <Container h="75%">
@@ -50,7 +55,9 @@ export default function Login() {
                 mt="md"
               />
               <Group justify="center" mt="xl">
-                <Button type="submit">Log In</Button>
+                <Button type="submit" fullWidth>
+                  Log In
+                </Button>
               </Group>
             </form>
           </Fieldset>
