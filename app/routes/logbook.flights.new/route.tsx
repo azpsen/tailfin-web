@@ -23,6 +23,8 @@ import ListInput from "@/ui/form/list-input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "@/util/api";
 import { useNavigate } from "@remix-run/react";
+import { useAuth } from "@/util/auth";
+import { AxiosError } from "axios";
 
 export default function NewFlight() {
   const form = useForm<FlightFormSchema>({
@@ -78,6 +80,8 @@ export default function NewFlight() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const { clearUser } = useAuth();
+
   const createFlight = useMutation({
     mutationFn: async (values: FlightFormSchema) => {
       const newFlight = flightCreateHelper(values);
@@ -85,11 +89,15 @@ export default function NewFlight() {
       console.log(res);
       return res.data;
     },
-    retry: (failureCount, error) => {
+    retry: (failureCount, error: AxiosError) => {
       return !error || error.response?.status !== 401;
     },
-    onError: (error) => {
+    onError: (error: AxiosError) => {
       console.log(error);
+      if (error.response?.status === 401) {
+        clearUser();
+        navigate("/login");
+      }
     },
     onSuccess: async (data: { id: string }) => {
       await queryClient.invalidateQueries({ queryKey: ["flights-list"] });

@@ -4,6 +4,7 @@ import { Center, Container, List, Loader, Stack, Text } from "@mantine/core";
 import { useNavigate, useParams } from "@remix-run/react";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useEffect } from "react";
 
 export default function Flight() {
@@ -13,7 +14,7 @@ export default function Flight() {
     queryKey: [params.id],
     queryFn: async () =>
       await client.get(`/flights/${params.id}`).then((res) => res.data),
-    retry: (failureCount, error) => {
+    retry: (failureCount, error: AxiosError) => {
       return !error || error.response?.status !== 401;
     },
   });
@@ -22,7 +23,11 @@ export default function Flight() {
   const { clearUser } = useAuth();
 
   useEffect(() => {
-    if (flight.isError && flight.error.response.status === 401) {
+    if (
+      flight.isError &&
+      flight.error instanceof AxiosError &&
+      flight.error.response?.status === 401
+    ) {
       clearUser();
       navigate("/login");
     }
