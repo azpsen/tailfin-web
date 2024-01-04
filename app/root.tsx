@@ -12,10 +12,16 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  useNavigate,
   useRouteError,
 } from "@remix-run/react";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import {
@@ -30,6 +36,8 @@ import {
 import { IconRocket } from "@tabler/icons-react";
 
 import { AuthProvider } from "./util/auth";
+import { useState } from "react";
+import { AxiosError } from "axios";
 
 export const links: LinksFunction = () => [
   {
@@ -94,9 +102,32 @@ export function ErrorBoundary() {
   );
 }
 
-const queryClient = new QueryClient();
+export default function App({ pageProps }) {
+  const navigate = useNavigate();
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error: Error) => {
+            if (error instanceof AxiosError && error.response?.status === 401) {
+              navigate("/login");
+            }
+          },
+        }),
+        defaultOptions: {
+          queries: {
+            staleTime: 1000,
+            retry: (failureCount, error: Error) => {
+              return (
+                !error ||
+                (error instanceof AxiosError && error.response?.status !== 401)
+              );
+            },
+          },
+        },
+      })
+  );
 
-export default function App() {
   return (
     <html lang="en">
       <head>

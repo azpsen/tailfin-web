@@ -1,5 +1,4 @@
 import { client } from "@/util/api";
-import { useAuth } from "@/util/auth";
 import { FlightConciseSchema } from "@/util/types";
 import {
   NavLink,
@@ -13,8 +12,6 @@ import {
 import { Link, useLocation, useNavigate } from "@remix-run/react";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useEffect } from "react";
 
 export function FlightsList() {
   const location = useLocation();
@@ -23,24 +20,9 @@ export function FlightsList() {
   const flights = useQuery({
     queryKey: ["flights-list"],
     queryFn: async () => await client.get(`/flights`).then((res) => res.data),
-    retry: (failureCount, error: AxiosError) => {
-      return !error || error.response?.status !== 401;
-    },
   });
 
   const navigate = useNavigate();
-  const { clearUser } = useAuth();
-
-  useEffect(() => {
-    if (
-      flights.isError &&
-      flights.error instanceof AxiosError &&
-      flights.error.response?.status === 401
-    ) {
-      clearUser();
-      navigate("/login");
-    }
-  }, [flights]);
 
   return (
     <Stack p="0" m="0" gap="0">
@@ -82,24 +64,9 @@ export function MobileFlightsList() {
   const flights = useQuery({
     queryKey: ["flights-list"],
     queryFn: async () => await client.get(`/flights`).then((res) => res.data),
-    retry: (failureCount, error: AxiosError) => {
-      return !error || error.response?.status !== 401;
-    },
   });
 
   const navigate = useNavigate();
-  const { clearUser } = useAuth();
-
-  useEffect(() => {
-    if (
-      flights.isError &&
-      flights.error instanceof AxiosError &&
-      flights.error.response?.status === 401
-    ) {
-      clearUser();
-      navigate("/login");
-    }
-  }, [flights]);
 
   return (
     <Stack p="0" m="0" justify="space-between" h="calc(100vh - 95px)">
