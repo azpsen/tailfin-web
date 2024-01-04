@@ -9,6 +9,7 @@ import {
   Loader,
   Center,
   Divider,
+  Badge,
 } from "@mantine/core";
 import { Link, useLocation, useNavigate } from "@remix-run/react";
 import { IconPlus } from "@tabler/icons-react";
@@ -57,10 +58,21 @@ function FlightsListDisplay({
                 key={flight.id}
                 component={Link}
                 to={`/logbook/flights/${flight.id}`}
-                label={`${flight.waypoint_from ? flight.waypoint_from : ""} ${
+                label={`${
+                  !(flight.waypoint_from || flight.waypoint_to)
+                    ? "No Route"
+                    : ""
+                }${flight.waypoint_from ? flight.waypoint_from : ""} ${
                   flight.waypoint_to ? flight.waypoint_to : ""
                 }`}
                 description={`${flight.date}`}
+                rightSection={
+                  flight.aircraft ? (
+                    <Badge key={"aircraft" + index} color="gray">
+                      {flight.aircraft}
+                    </Badge>
+                  ) : null
+                }
                 active={page === flight.id}
               />
             ))}
