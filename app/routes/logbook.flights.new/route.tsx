@@ -111,7 +111,7 @@ export default function NewFlight() {
         <Title order={2}>New Flight</Title>
 
         <form onSubmit={form.onSubmit((values) => createFlight.mutate(values))}>
-          <ScrollAreaAutosize mah="calc(100vh - 95px - 110px">
+          <ScrollAreaAutosize mah="calc(100vh - 95px - 110px)">
             <Container>
               {/* Date and Aircraft */}
 
