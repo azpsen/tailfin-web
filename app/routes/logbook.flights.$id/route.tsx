@@ -1,3 +1,4 @@
+import ErrorDisplay from "@/ui/error-display";
 import { client } from "@/util/api";
 import { Center, Container, List, Loader, Stack, Text } from "@mantine/core";
 import { useParams } from "@remix-run/react";
@@ -17,12 +18,7 @@ export default function Flight() {
     <Container>
       <Stack h="calc(100vh - 95px)">
         {flight.isError ? (
-          <Stack align="center" justify="center" h="100%" m="0" p="0">
-            <Text c="red">
-              <IconAlertTriangle size="3rem" />
-            </Text>
-            <Text c="red">Error fetching flight</Text>
-          </Stack>
+          <ErrorDisplay error="Error Fetching Flight" />
         ) : flight.isPending ? (
           <Center h="100%">
             <Loader />
