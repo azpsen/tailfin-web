@@ -13,10 +13,15 @@ export default function Flight() {
   });
 
   return (
-    <Container py="xl">
-      <Stack h="calc(100vh - 95px)" m="0" p="0">
+    <Container>
+      <Stack h="calc(100vh - 95px)">
         {flight.isError ? (
-          <Text c="red">Error fetching flight</Text>
+          <Stack align="center" justify="center" h="100%" m="0" p="0">
+            <Text c="red">
+              <IconAlertTriangle size="3rem" />
+            </Text>
+            <Text c="red">Error fetching flight</Text>
+          </Stack>
         ) : flight.isPending ? (
           <Center h="100%">
             <Loader />
