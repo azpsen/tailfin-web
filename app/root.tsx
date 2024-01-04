@@ -17,12 +17,14 @@ import {
 } from "@remix-run/react";
 
 import {
-  MutationCache,
+  HydrationBoundary,
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { useDehydratedState } from "use-dehydrated-state";
 
 import {
   Button,
@@ -102,7 +104,7 @@ export function ErrorBoundary() {
   );
 }
 
-export default function App({ pageProps }) {
+export default function App() {
   const navigate = useNavigate();
   const [queryClient] = useState(
     () =>
@@ -128,6 +130,8 @@ export default function App({ pageProps }) {
       })
   );
 
+  const dehydratedState = useDehydratedState();
+
   return (
     <html lang="en">
       <head>
@@ -139,15 +143,17 @@ export default function App({ pageProps }) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <MantineProvider theme={{ primaryColor: "violet" }}>
-            <AuthProvider>
-              <Outlet />
-              <ScrollRestoration />
-              <Scripts />
-              <LiveReload />
-            </AuthProvider>
-          </MantineProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          <HydrationBoundary state={dehydratedState}>
+            <MantineProvider theme={{ primaryColor: "violet" }}>
+              <AuthProvider>
+                <Outlet />
+                <ScrollRestoration />
+                <Scripts />
+                <LiveReload />
+              </AuthProvider>
+            </MantineProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </HydrationBoundary>
         </QueryClientProvider>
       </body>
     </html>

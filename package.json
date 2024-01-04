@@ -30,7 +30,8 @@
     "dayjs-plugin-utc": "^0.1.2",
     "isbot": "^3.6.8",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "use-dehydrated-state": "^0.1.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.4.1",

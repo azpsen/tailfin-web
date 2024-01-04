@@ -68,7 +68,7 @@ type FlightConciseSchema = {
   user: string;
   id: string;
 
-  date: dayjs.Dayjs;
+  date: string;
   aircraft: string;
   waypoint_from: string;
   waypoint_to: string;
