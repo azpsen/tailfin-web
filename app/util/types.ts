@@ -135,7 +135,34 @@ const flightCreateHelper = (
   }
 };
 
+const flightEditHelper = (
+  values: FlightCreateSchema
+): FlightFormSchema | void => {
+  try {
+    const flight = {
+      ...values,
+      date: dayjs(values.date),
+      time_start: Number(
+        `${dayjs(values.time_start).hour()}${dayjs(values.time_start).minute()}`
+      ),
+      time_off: Number(
+        `${dayjs(values.time_off).hour()}${dayjs(values.time_off).minute()}`
+      ),
+      time_down: Number(
+        `${dayjs(values.time_down).hour()}${dayjs(values.time_down).minute()}`
+      ),
+      time_stop: Number(
+        `${dayjs(values.time_stop).hour()}${dayjs(values.time_stop).minute()}`
+      ),
+    };
+    return flight;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export {
+  flightEditHelper,
   flightCreateHelper,
   type FlightFormSchema,
   type FlightCreateSchema,

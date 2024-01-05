@@ -91,7 +91,12 @@ export default function Flight() {
                   Flight Log
                 </Title>
                 <Group>
-                  <Tooltip label="Edit Flight">
+                  <Tooltip
+                    label="Edit Flight"
+                    onClick={() =>
+                      navigate(`/logbook/flights/edit/${params.id}`)
+                    }
+                  >
                     <ActionIcon variant="subtle" size="lg">
                       <IconPencil />
                     </ActionIcon>

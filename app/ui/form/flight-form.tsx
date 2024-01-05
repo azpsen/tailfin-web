@@ -26,11 +26,19 @@ export default function FlightForm({
   isError,
   error,
   initialValues,
+  mah,
+  submitButtonLabel,
+  withCancelButton,
+  cancelFunc,
 }: {
   onSubmit: (values: FlightFormSchema) => void;
   isError: boolean;
   error: AxiosError | null;
-  initialValues?: FlightFormSchema;
+  initialValues?: FlightFormSchema | null;
+  mah?: string;
+  submitButtonLabel?: string;
+  withCancelButton?: boolean;
+  cancelFunc?: () => void;
 }) {
   const form = useForm<FlightFormSchema>({
     initialValues: initialValues ?? {
@@ -84,7 +92,7 @@ export default function FlightForm({
 
   return (
     <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
-      <ScrollArea.Autosize mah="calc(100vh - 95px - 110px)">
+      <ScrollArea.Autosize mah={mah}>
         <Container>
           {/* Date and Aircraft */}
 
@@ -289,8 +297,13 @@ export default function FlightForm({
             {error?.message}
           </Text>
         ) : null}
+        {withCancelButton ? (
+          <Button onClick={cancelFunc} color="gray">
+            Cancel
+          </Button>
+        ) : null}
         <Button type="submit" leftSection={<IconPencil />}>
-          Create
+          {submitButtonLabel ?? "Create"}
         </Button>
       </Group>
     </form>

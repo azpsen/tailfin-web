@@ -39,6 +39,7 @@ export default function NewFlight() {
           onSubmit={createFlight.mutate}
           isError={createFlight.isError}
           error={createFlight.error}
+          mah="calc(100vh - 95px - 110px)"
         />
       </Stack>
     </Container>
