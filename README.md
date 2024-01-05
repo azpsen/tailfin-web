@@ -13,8 +13,9 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Configuration](#configuration)
-- [Configuration](#configuration)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
 - [Usage](#usage)
 - [Roadmap](#roadmap)
 
@@ -29,12 +30,12 @@ Since I could not find any ready-made self-hosted logbooks, I decided to make my
 
 ## Getting Started <a name="getting_started"></a>
 
-### Prerequisites
+### Prerequisites <a name="prerequisites"></a>
 
 - npm
 - [tailfin-api](https://github.com/azpsen/tailfin-api)
 
-### Installation
+### Installation <a name="installation"></a>
 
 1. Clone the repo
 
@@ -55,7 +56,7 @@ $ npm install
 $ npm run build && npm run start
 ```
 
-## Configuration <a name="configuration"></a>
+### Configuration <a name="configuration"></a>
 
 The URL for the Tailfin API can be set with the environment variable `TAILFIN_API_URL`. It defaults to `http://localhost:8081`, which assumes the API runs on the same machine and uses the default port.
 
