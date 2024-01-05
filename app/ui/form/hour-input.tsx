@@ -20,6 +20,7 @@ function HourInput({
     <NumberInput
       label={label}
       decimalScale={1}
+      step={0.1}
       min={0}
       fixedDecimalScale
       leftSection={
@@ -57,6 +58,7 @@ function ZeroHourInput({
     <NumberInput
       label={label}
       decimalScale={1}
+      step={0.1}
       min={0}
       fixedDecimalScale
       leftSection={

@@ -179,11 +179,11 @@ export default function NewFlight() {
                     field="time_start"
                     label="Start Time"
                   />
-                  <TimeInput form={form} field="time_stop" label="Stop Time" />
+                  <TimeInput form={form} field="time_off" label="Time Off" />
                 </Group>
                 <Group justify="center" grow mt="md">
-                  <TimeInput form={form} field="time_off" label="Time Off" />
                   <TimeInput form={form} field="time_down" label="Time Down" />
+                  <TimeInput form={form} field="time_stop" label="Stop Time" />
                 </Group>
               </Fieldset>
 
@@ -232,7 +232,7 @@ export default function NewFlight() {
                   />
                   <NumberInput
                     label="Distance Cross-Country"
-                    decimalScale={2}
+                    decimalScale={1}
                     min={0}
                     fixedDecimalScale
                     leftSection={
