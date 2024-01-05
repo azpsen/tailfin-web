@@ -37,7 +37,7 @@ export default function ListInput({
   };
 
   return (
-    <PillsInput label={label}>
+    <PillsInput label={label} description="Press enter or comma to add item">
       <Pill.Group>
         {(form.getTransformedValues()[field_key] as string[]).map(
           (item: string) => (

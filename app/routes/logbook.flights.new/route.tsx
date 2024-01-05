@@ -5,8 +5,9 @@ import {
   Fieldset,
   Group,
   NumberInput,
-  ScrollAreaAutosize,
+  ScrollArea,
   Stack,
+  Text,
   TextInput,
   Textarea,
   Title,
@@ -23,7 +24,6 @@ import ListInput from "@/ui/form/list-input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/util/api";
 import { useNavigate } from "@remix-run/react";
-import { useAuth } from "@/util/auth";
 import { AxiosError } from "axios";
 
 export default function NewFlight() {
@@ -82,23 +82,17 @@ export default function NewFlight() {
 
   const client = useApi();
 
-  const { clearUser } = useAuth();
-
   const createFlight = useMutation({
     mutationFn: async (values: FlightFormSchema) => {
       const newFlight = flightCreateHelper(values);
-      const res = await client.post("/flights", newFlight);
-      return res.data;
+      if (newFlight) {
+        const res = await client.post("/flights", newFlight);
+        return res.data;
+      }
+      throw new Error("Flight creation failed");
     },
     retry: (failureCount, error: AxiosError) => {
       return !error || error.response?.status !== 401;
-    },
-    onError: (error: AxiosError) => {
-      console.log(error);
-      if (error.response?.status === 401) {
-        clearUser();
-        navigate("/login");
-      }
     },
     onSuccess: async (data: { id: string }) => {
       await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
@@ -112,7 +106,7 @@ export default function NewFlight() {
         <Title order={2}>New Flight</Title>
 
         <form onSubmit={form.onSubmit((values) => createFlight.mutate(values))}>
-          <ScrollAreaAutosize mah="calc(100vh - 95px - 110px)">
+          <ScrollArea.Autosize mah="calc(100vh - 95px - 110px)">
             <Container>
               {/* Date and Aircraft */}
 
@@ -347,9 +341,14 @@ export default function NewFlight() {
                 />
               </Fieldset>
             </Container>
-          </ScrollAreaAutosize>
+          </ScrollArea.Autosize>
 
           <Group justify="flex-end" mt="md">
+            {createFlight.isError ? (
+              <Text c="red" fw={700}>
+                {createFlight.error.message}
+              </Text>
+            ) : null}
             <Button type="submit" leftSection={<IconPencil />}>
               Create
             </Button>

@@ -88,44 +88,51 @@ type FlightConciseSchema = {
   comments: string;
 };
 
-const flightCreateHelper = (values: FlightFormSchema): FlightCreateSchema => {
-  console.log(values.date.utc().startOf("date").toISOString());
-  return {
-    ...values,
-    date: values.date.utc().startOf("day").toISOString(),
-    hobbs_start: Number(values.hobbs_start),
-    hobbs_end: Number(values.hobbs_end),
-    tach_start: Number(values.tach_start),
-    tach_end: Number(values.tach_end),
-    time_start: values.date
-      .utc()
-      .hour(Math.floor((values.time_start ?? 0) / 100))
-      .minute(Math.floor((values.time_start ?? 0) % 100))
-      .second(0)
-      .millisecond(0)
-      .toISOString(),
-    time_off: values.date
-      .utc()
-      .hour(Math.floor((values.time_off ?? 0) / 100))
-      .minute(Math.floor((values.time_off ?? 0) % 100))
-      .second(0)
-      .millisecond(0)
-      .toISOString(),
-    time_down: values.date
-      .utc()
-      .hour(Math.floor((values.time_down ?? 0) / 100))
-      .minute(Math.floor((values.time_down ?? 0) % 100))
-      .second(0)
-      .millisecond(0)
-      .toISOString(),
-    time_stop: values.date
-      .utc()
-      .hour(Math.floor((values.time_stop ?? 0) / 100))
-      .minute(Math.floor((values.time_stop ?? 0) % 100))
-      .second(0)
-      .millisecond(0)
-      .toISOString(),
-  };
+const flightCreateHelper = (
+  values: FlightFormSchema
+): FlightCreateSchema | void => {
+  const date = dayjs(values.date);
+  try {
+    const newFlight = {
+      ...values,
+      date: date.utc().startOf("day").toISOString(),
+      hobbs_start: values.hobbs_start ? Number(values.hobbs_start) : null,
+      hobbs_end: values.hobbs_end ? Number(values.hobbs_end) : null,
+      tach_start: values.tach_start ? Number(values.tach_start) : null,
+      tach_end: values.tach_end ? Number(values.tach_end) : null,
+      time_start: date
+        .utc()
+        .hour(Math.floor((values.time_start ?? 0) / 100))
+        .minute(Math.floor((values.time_start ?? 0) % 100))
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
+      time_off: date
+        .utc()
+        .hour(Math.floor((values.time_off ?? 0) / 100))
+        .minute(Math.floor((values.time_off ?? 0) % 100))
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
+      time_down: date
+        .utc()
+        .hour(Math.floor((values.time_down ?? 0) / 100))
+        .minute(Math.floor((values.time_down ?? 0) % 100))
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
+      time_stop: date
+        .utc()
+        .hour(Math.floor((values.time_stop ?? 0) / 100))
+        .minute(Math.floor((values.time_stop ?? 0) % 100))
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
+    };
+    return newFlight;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export {

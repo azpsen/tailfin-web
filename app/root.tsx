@@ -37,6 +37,7 @@ import {
   Stack,
   Title,
 } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import { IconRocket } from "@tabler/icons-react";
 
 import { AuthProvider } from "./util/auth";
@@ -159,12 +160,14 @@ export default function App() {
           <HydrationBoundary state={dehydratedState}>
             <ApiProvider apiUrl={data.ENV.TAILFIN_API_URL}>
               <MantineProvider theme={{ primaryColor: "violet" }}>
-                <AuthProvider>
-                  <Outlet />
-                  <ScrollRestoration />
-                  <Scripts />
-                  <LiveReload />
-                </AuthProvider>
+                <ModalsProvider>
+                  <AuthProvider>
+                    <Outlet />
+                    <ScrollRestoration />
+                    <Scripts />
+                    <LiveReload />
+                  </AuthProvider>
+                </ModalsProvider>
               </MantineProvider>
             </ApiProvider>
             <ReactQueryDevtools initialIsOpen={false} />
