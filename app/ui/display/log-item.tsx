@@ -1,4 +1,5 @@
 import { Card, Group, Stack, Text } from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
 
 export function LogItem({
   label,
@@ -35,7 +36,10 @@ export function VerticalLogItem({
   if (content === null) content = "";
   if (decimal > 0) content = Number(content).toFixed(decimal);
   if (hours) content = Number(content).toFixed(1);
-  if (time) content = content.split("T")[1];
+  if (time) {
+    const time = content.split("T")[1].split(":");
+    content = `${time[0]}:${time[1]}`;
+  }
   if (date) content = content.split("T")[0];
 
   return (
@@ -44,8 +48,12 @@ export function VerticalLogItem({
         <Text c="dimmed" style={{ textalign: "center" }}>
           {label}
         </Text>
-        <Text size="lg" style={{ textalign: "center" }}>
-          {content}
+        <Text
+          size="lg"
+          style={{ textalign: "center" }}
+          c={content === "" ? "dimmed" : ""}
+        >
+          {content === "" ? <IconX /> : content}
         </Text>
       </Stack>
     </Card>

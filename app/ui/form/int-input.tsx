@@ -27,7 +27,7 @@ function IntInput({
           onClick={() => form.setFieldValue(field, "")}
           style={{
             display:
-              ["", null].indexOf(form.getTransformedValues()[field_key]) > -1
+              ["", null].indexOf(form.getTransformedValues()[field_key]) === 0
                 ? "none"
                 : undefined,
           }}
@@ -63,7 +63,7 @@ function ZeroIntInput({
           onClick={() => form.setFieldValue(field, 0)}
           style={{
             display:
-              form.getTransformedValues()[field_key] > 0 ? "none" : undefined,
+              form.getTransformedValues()[field_key] === 0 ? "none" : undefined,
           }}
         />
       }

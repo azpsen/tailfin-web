@@ -57,10 +57,10 @@ type FlightFormSchema = FlightBaseSchema & {
 type FlightCreateSchema = FlightBaseSchema & {
   date: string;
 
-  time_start: dayjs.Dayjs;
-  time_off: dayjs.Dayjs;
-  time_down: dayjs.Dayjs;
-  time_stop: dayjs.Dayjs;
+  time_start: string;
+  time_off: string;
+  time_down: string;
+  time_stop: string;
 };
 
 type FlightDisplaySchema = FlightBaseSchema & {
@@ -89,6 +89,7 @@ type FlightConciseSchema = {
 };
 
 const flightCreateHelper = (values: FlightFormSchema): FlightCreateSchema => {
+  console.log(values.date.utc().startOf("date").toISOString());
   return {
     ...values,
     date: values.date.utc().startOf("day").toISOString(),
@@ -98,20 +99,32 @@ const flightCreateHelper = (values: FlightFormSchema): FlightCreateSchema => {
     tach_end: Number(values.tach_end),
     time_start: values.date
       .utc()
-      .hour(values.time_start ?? 0 / 100)
-      .minute(values.time_start ?? 0 % 100),
+      .hour(Math.floor((values.time_start ?? 0) / 100))
+      .minute(Math.floor((values.time_start ?? 0) % 100))
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
     time_off: values.date
       .utc()
-      .hour(values.time_off ?? 0 / 100)
-      .minute(values.time_off ?? 0 % 100),
+      .hour(Math.floor((values.time_off ?? 0) / 100))
+      .minute(Math.floor((values.time_off ?? 0) % 100))
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
     time_down: values.date
       .utc()
-      .hour(values.time_down ?? 0 / 100)
-      .minute(values.time_down ?? 0 % 100),
+      .hour(Math.floor((values.time_down ?? 0) / 100))
+      .minute(Math.floor((values.time_down ?? 0) % 100))
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
     time_stop: values.date
       .utc()
-      .hour(values.time_stop ?? 0 / 100)
-      .minute(values.time_stop ?? 0 % 100),
+      .hour(Math.floor((values.time_stop ?? 0) / 100))
+      .minute(Math.floor((values.time_stop ?? 0) % 100))
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
   };
 };
 
