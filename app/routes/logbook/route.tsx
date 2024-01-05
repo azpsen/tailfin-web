@@ -16,8 +16,6 @@ export default function Index() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("loading: " + loading);
-    console.log("user: " + user);
     if (!loading && !user) {
       navigate("/login");
     }
