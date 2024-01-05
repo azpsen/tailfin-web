@@ -11,11 +11,11 @@
 
 ## Table of Contents
 
-+ [About](#about)
-+ [Getting Started](#getting_started)
-+ [Configuration](#configuration)
-+ [Usage](#usage)
-+ [Roadmap](#roadmap)
+- [About](#about)
+- [Getting Started](#getting_started)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Roadmap](#roadmap)
 
 ## About <a name="about"></a>
 
@@ -63,8 +63,9 @@ Currently, this only supports a local Tailfin API instance running at `localhost
 ## Roadmap <a name="roadmap"></a>
 
 - [x] Basic API sessions and data fetching
-- [ ] Functionality for adding flights
+- [x] Functionality for adding flights
 - [ ] Dashboard with statistics
+- [ ] Calendar view
 - [ ] Attach photos to log entries
 - [ ] Admin dashboard to manage all users and server configuration
 - [ ] Integrate database of airports and waypoints that can be queried to find nearest
