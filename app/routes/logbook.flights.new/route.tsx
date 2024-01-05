@@ -21,7 +21,7 @@ import { HourInput, ZeroHourInput } from "@/ui/form/hour-input";
 import { ZeroIntInput } from "@/ui/form/int-input";
 import ListInput from "@/ui/form/list-input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { client } from "@/util/api";
+import { useApi } from "@/util/api";
 import { useNavigate } from "@remix-run/react";
 import { useAuth } from "@/util/auth";
 import { AxiosError } from "axios";
@@ -79,6 +79,8 @@ export default function NewFlight() {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const client = useApi();
 
   const { clearUser } = useAuth();
 

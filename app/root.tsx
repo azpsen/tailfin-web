@@ -12,6 +12,8 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  json,
+  useLoaderData,
   useNavigate,
   useRouteError,
 } from "@remix-run/react";
@@ -40,6 +42,7 @@ import { IconRocket } from "@tabler/icons-react";
 import { AuthProvider } from "./util/auth";
 import { useState } from "react";
 import { AxiosError } from "axios";
+import { ApiProvider } from "./util/api";
 
 export const links: LinksFunction = () => [
   {
@@ -104,6 +107,14 @@ export function ErrorBoundary() {
   );
 }
 
+export async function loader() {
+  return json({
+    ENV: {
+      TAILFIN_API_URL: process.env.TAILFIN_API_URL ?? "http://localhost:8081",
+    },
+  });
+}
+
 export default function App() {
   const navigate = useNavigate();
   const [queryClient] = useState(
@@ -132,6 +143,8 @@ export default function App() {
 
   const dehydratedState = useDehydratedState();
 
+  const data = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -144,14 +157,16 @@ export default function App() {
       <body>
         <QueryClientProvider client={queryClient}>
           <HydrationBoundary state={dehydratedState}>
-            <MantineProvider theme={{ primaryColor: "violet" }}>
-              <AuthProvider>
-                <Outlet />
-                <ScrollRestoration />
-                <Scripts />
-                <LiveReload />
-              </AuthProvider>
-            </MantineProvider>
+            <ApiProvider apiUrl={data.ENV.TAILFIN_API_URL}>
+              <MantineProvider theme={{ primaryColor: "violet" }}>
+                <AuthProvider>
+                  <Outlet />
+                  <ScrollRestoration />
+                  <Scripts />
+                  <LiveReload />
+                </AuthProvider>
+              </MantineProvider>
+            </ApiProvider>
             <ReactQueryDevtools initialIsOpen={false} />
           </HydrationBoundary>
         </QueryClientProvider>

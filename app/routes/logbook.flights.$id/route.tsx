@@ -1,6 +1,6 @@
 import { VerticalLogItem } from "@/ui/display/log-item";
 import ErrorDisplay from "@/ui/error-display";
-import { client } from "@/util/api";
+import { useApi } from "@/util/api";
 import {
   Center,
   Container,
@@ -15,6 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function Flight() {
   const params = useParams();
+
+  const client = useApi();
 
   const flight = useQuery({
     queryKey: [params.id],

@@ -1,4 +1,4 @@
-import { client } from "@/util/api";
+import { useApi } from "@/util/api";
 import { FlightConciseSchema } from "@/util/types";
 import {
   NavLink,
@@ -22,6 +22,8 @@ import {
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
 function useFlights() {
+  const client = useApi();
+
   const flights = useQuery({
     queryKey: ["flights-list"],
     queryFn: async () =>

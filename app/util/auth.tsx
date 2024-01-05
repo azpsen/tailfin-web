@@ -1,4 +1,4 @@
-import { client } from "./api";
+import { useApi } from "./api";
 import { useNavigate } from "@remix-run/react";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -36,6 +36,8 @@ function useProvideAuth() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
+
+  const client = useApi();
 
   const handleUser = (rawUser: string | null) => {
     if (rawUser) {

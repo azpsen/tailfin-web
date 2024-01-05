@@ -1,9 +1,11 @@
 import ErrorDisplay from "@/ui/error-display";
-import { client } from "@/util/api";
+import { useApi } from "@/util/api";
 import { Center, Container, Loader, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Me() {
+  const client = useApi();
+
   const user = useQuery({
     queryKey: ["user"],
     queryFn: async () => await client.get(`users/me`).then((res) => res.data),
