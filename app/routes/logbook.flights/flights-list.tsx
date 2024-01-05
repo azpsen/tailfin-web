@@ -8,30 +8,24 @@ import {
   Stack,
   Loader,
   Center,
-  Divider,
   Badge,
+  Group,
+  Divider,
 } from "@mantine/core";
+import { randomId } from "@mantine/hooks";
 import { Link, useLocation, useNavigate } from "@remix-run/react";
-import { IconPlus } from "@tabler/icons-react";
+import {
+  IconArrowRightTail,
+  IconPlaneTilt,
+  IconPlus,
+} from "@tabler/icons-react";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
 function useFlights() {
   const flights = useQuery({
     queryKey: ["flights-list"],
-    queryFn: async () => {
-      const res = await client.get(`/flights`);
-      const groupedFlights: { [date: string]: FlightConciseSchema[] } = {};
-      res.data.map((log: FlightConciseSchema) => {
-        const dateStr = log.date;
-
-        if (!groupedFlights[dateStr]) {
-          groupedFlights[dateStr] = [];
-        }
-
-        groupedFlights[dateStr].push(log);
-      });
-      return groupedFlights;
-    },
+    queryFn: async () =>
+      await client.get(`/flights/by-date`).then((res) => res.data),
   });
 
   return flights;
@@ -41,41 +35,127 @@ function FlightsListDisplay({
   flights,
   page,
 }: {
-  flights: UseQueryResult<{ [date: string]: FlightConciseSchema[] }>;
+  flights: UseQueryResult<{
+    [year: string]: {
+      [month: string]: { [day: string]: FlightConciseSchema[] };
+    };
+  }>;
   page: string;
 }) {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
   return (
     <>
       {flights.data ? (
-        Object.entries(flights.data).map(([date, logs], index: number) => (
+        Object.entries(flights.data).map(([year, months]) => (
           <>
-            <Text key={date} mt="md" mb="xs" fw={700}>
-              {date}
-            </Text>
-            <Divider key={date + index} />
-            {logs.map((flight: FlightConciseSchema) => (
-              <NavLink
-                key={flight.id}
-                component={Link}
-                to={`/logbook/flights/${flight.id}`}
-                label={`${
-                  !(flight.waypoint_from || flight.waypoint_to)
-                    ? "No Route"
-                    : ""
-                }${flight.waypoint_from ? flight.waypoint_from : ""} ${
-                  flight.waypoint_to ? flight.waypoint_to : ""
-                }`}
-                description={`${flight.date}`}
-                rightSection={
-                  flight.aircraft ? (
-                    <Badge key={"aircraft" + index} color="gray">
-                      {flight.aircraft}
-                    </Badge>
-                  ) : null
-                }
-                active={page === flight.id}
-              />
-            ))}
+            <NavLink
+              key={randomId()}
+              label={`-- ${year} --`}
+              fw={700}
+              style={{ textAlign: "center" }}
+              defaultOpened
+              childrenOffset={0}
+            >
+              <>
+                <Divider />
+                {Object.entries(months).map(([month, days]) => (
+                  <NavLink
+                    key={randomId()}
+                    label={monthNames[Number(month) - 1]}
+                    fw={500}
+                    style={{ textAlign: "center" }}
+                    defaultOpened
+                  >
+                    <Divider />
+                    {Object.entries(days).map(([, logs]) => (
+                      <>
+                        {logs.map((flight: FlightConciseSchema) => (
+                          <>
+                            <NavLink
+                              key={randomId()}
+                              component={Link}
+                              to={`/logbook/flights/${flight.id}`}
+                              label={
+                                <Group>
+                                  <Badge
+                                    color="gray"
+                                    size="lg"
+                                    radius="sm"
+                                    px="xs"
+                                  >
+                                    {flight.date}
+                                  </Badge>
+                                  <Text fw={500}>
+                                    {`${Number(flight.time_total).toFixed(
+                                      1
+                                    )} hr`}
+                                  </Text>
+                                  {flight.waypoint_from ||
+                                  flight.waypoint_to ? (
+                                    <Text>/</Text>
+                                  ) : null}
+                                  <Group gap="xs">
+                                    {flight.waypoint_from ? (
+                                      <Text>{flight.waypoint_from}</Text>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {flight.waypoint_from &&
+                                    flight.waypoint_to ? (
+                                      <IconArrowRightTail />
+                                    ) : null}
+                                    {flight.waypoint_to ? (
+                                      <Text>{flight.waypoint_to}</Text>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </Group>
+                                </Group>
+                              }
+                              description={
+                                <Text lineClamp={1}>
+                                  {flight.comments
+                                    ? flight.comments
+                                    : "(No Comment)"}
+                                </Text>
+                              }
+                              rightSection={
+                                flight.aircraft ? (
+                                  <Badge
+                                    key={randomId()}
+                                    leftSection={<IconPlaneTilt size="1rem" />}
+                                    color="gray"
+                                    size="lg"
+                                  >
+                                    {flight.aircraft}
+                                  </Badge>
+                                ) : null
+                              }
+                              active={page === flight.id}
+                            />
+                            <Divider />
+                          </>
+                        ))}
+                      </>
+                    ))}
+                  </NavLink>
+                ))}
+              </>
+            </NavLink>
           </>
         ))
       ) : flights.isLoading ? (

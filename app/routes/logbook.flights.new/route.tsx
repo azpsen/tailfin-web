@@ -86,7 +86,6 @@ export default function NewFlight() {
     mutationFn: async (values: FlightFormSchema) => {
       const newFlight = flightCreateHelper(values);
       const res = await client.post("/flights", newFlight);
-      console.log(res);
       return res.data;
     },
     retry: (failureCount, error: AxiosError) => {

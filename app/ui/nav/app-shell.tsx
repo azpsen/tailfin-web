@@ -19,7 +19,7 @@ export function TailfinAppShell({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      navbar={{ width: 300, breakpoint: "xl", collapsed: { mobile: !opened } }}
       padding="md"
     >
       <AppShell.Header>
@@ -28,7 +28,7 @@ export function TailfinAppShell({ children }: { children: React.ReactNode }) {
             <Burger
               opened={opened}
               onClick={toggle}
-              hiddenFrom="sm"
+              hiddenFrom="xl"
               size="sm"
             />
           </Group>
@@ -44,7 +44,7 @@ export function TailfinAppShell({ children }: { children: React.ReactNode }) {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar>
-        <Navbar />
+        <Navbar opened={opened} toggle={toggle} />
       </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>

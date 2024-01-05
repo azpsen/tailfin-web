@@ -8,7 +8,13 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 
-export default function Navbar() {
+export default function Navbar({
+  opened,
+  toggle,
+}: {
+  opened: boolean;
+  toggle: () => void;
+}) {
   const location = useLocation();
   const page = location.pathname.split("/")[2];
 
@@ -24,6 +30,7 @@ export default function Navbar() {
           label="Dashboard"
           leftSection={<IconPlaneDeparture />}
           active={page == null}
+          onClick={() => (opened ? toggle() : null)}
         />
         <NavLink
           p="md"
@@ -32,6 +39,7 @@ export default function Navbar() {
           label="Flights"
           leftSection={<IconBook2 />}
           active={page === "flights"}
+          onClick={() => (opened ? toggle() : null)}
         />
       </Stack>
       <Stack gap="0">

@@ -27,7 +27,6 @@ client.interceptors.request.use(
         error.config.headers.Authorization = `Bearer ${newAccessToken}`;
         return client(error.config);
       } catch (err) {
-        console.log("ERRORRRRRRRRRRRRRR");
         clearUser();
         window.location.href = "/login";
       }

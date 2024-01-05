@@ -1,22 +1,22 @@
-import { Divider, Grid, Container, ScrollAreaAutosize } from "@mantine/core";
+import { Divider, Grid, Container, ScrollArea } from "@mantine/core";
 import { Outlet } from "@remix-run/react";
 import { FlightsList } from "./flights-list";
 
 export default function FlightsLayout() {
   return (
     <>
-      <Grid h="100%" visibleFrom="md">
-        <Grid.Col span={3}>
+      <Grid h="100%" visibleFrom="lg">
+        <Grid.Col span={4}>
           <FlightsList />
         </Grid.Col>
         <Divider orientation="vertical" m="sm" />
         <Grid.Col span="auto">
-          <ScrollAreaAutosize mah="calc(100vh - 95px)">
+          <ScrollArea.Autosize mah="calc(100vh - 95px)">
             <Outlet />
-          </ScrollAreaAutosize>
+          </ScrollArea.Autosize>
         </Grid.Col>
       </Grid>
-      <Container hiddenFrom="md">
+      <Container hiddenFrom="lg" style={{ paddingLeft: 0, paddingRight: 0 }}>
         <Outlet />
       </Container>
     </>

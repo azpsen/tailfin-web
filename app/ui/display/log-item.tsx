@@ -40,7 +40,7 @@ export function VerticalLogItem({
 
   return (
     <Card>
-      <Stack gap="xs" align="center">
+      <Stack gap="xs" align="center" h="100%">
         <Text c="dimmed" style={{ textalign: "center" }}>
           {label}
         </Text>
