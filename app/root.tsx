@@ -14,19 +14,8 @@ import {
   isRouteErrorResponse,
   json,
   useLoaderData,
-  useNavigate,
   useRouteError,
 } from "@remix-run/react";
-
-import {
-  HydrationBoundary,
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-import { useDehydratedState } from "use-dehydrated-state";
 
 import {
   Button,
@@ -41,8 +30,6 @@ import { ModalsProvider } from "@mantine/modals";
 import { IconRocket } from "@tabler/icons-react";
 
 import { AuthProvider } from "./util/auth";
-import { useState } from "react";
-import { AxiosError } from "axios";
 import { ApiProvider } from "./util/api";
 
 export const links: LinksFunction = () => [
@@ -117,33 +104,6 @@ export async function loader() {
 }
 
 export default function App() {
-  const navigate = useNavigate();
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        queryCache: new QueryCache({
-          onError: (error: Error) => {
-            if (error instanceof AxiosError && error.response?.status === 401) {
-              navigate("/login");
-            }
-          },
-        }),
-        defaultOptions: {
-          queries: {
-            staleTime: 1000,
-            retry: (failureCount, error: Error) => {
-              return (
-                !error ||
-                (error instanceof AxiosError && error.response?.status !== 401)
-              );
-            },
-          },
-        },
-      })
-  );
-
-  const dehydratedState = useDehydratedState();
-
   const data = useLoaderData<typeof loader>();
 
   return (
@@ -156,23 +116,18 @@ export default function App() {
         <ColorSchemeScript />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <HydrationBoundary state={dehydratedState}>
-            <ApiProvider apiUrl={data.ENV.TAILFIN_API_URL}>
-              <MantineProvider theme={{ primaryColor: "violet" }}>
-                <ModalsProvider>
-                  <AuthProvider>
-                    <Outlet />
-                    <ScrollRestoration />
-                    <Scripts />
-                    <LiveReload />
-                  </AuthProvider>
-                </ModalsProvider>
-              </MantineProvider>
-            </ApiProvider>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </HydrationBoundary>
-        </QueryClientProvider>
+        <ApiProvider apiUrl={data.ENV.TAILFIN_API_URL}>
+          <MantineProvider theme={{ primaryColor: "violet" }}>
+            <ModalsProvider>
+              <AuthProvider>
+                <Outlet />
+                <ScrollRestoration />
+                <Scripts />
+                <LiveReload />
+              </AuthProvider>
+            </ModalsProvider>
+          </MantineProvider>
+        </ApiProvider>
       </body>
     </html>
   );

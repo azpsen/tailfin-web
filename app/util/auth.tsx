@@ -1,5 +1,6 @@
 import { useApi } from "./api";
 import { useNavigate } from "@remix-run/react";
+import { AxiosError } from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextValues {
@@ -11,7 +12,7 @@ interface AuthContextValues {
   }: {
     username: string;
     password: string;
-  }) => void;
+  }) => Promise<string | void>;
   signout: () => void;
   clearUser: () => void;
 }
@@ -72,9 +73,11 @@ function useProvideAuth() {
     await client
       .postForm("/auth/login", values)
       .then((response) => handleTokens(response.data))
-      .catch(() => {
+      .catch((err: AxiosError) => {
         setLoading(false);
-        throw new Error("Invalid username or password");
+        if (err.response?.status === 401)
+          throw new Error("Invalid username or password");
+        throw new Error(err.message);
       });
 
     setLoading(false);
