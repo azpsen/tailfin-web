@@ -14,6 +14,7 @@
 - [About](#about)
 - [Getting Started](#getting_started)
 - [Configuration](#configuration)
+- [Configuration](#configuration)
 - [Usage](#usage)
 - [Roadmap](#roadmap)
 
@@ -54,11 +55,13 @@ $ npm install
 $ npm run build && npm run start
 ```
 
+## Configuration <a name="configuration"></a>
+
+The URL for the Tailfin API can be set with the environment variable `TAILFIN_API_URL`. It defaults to `http://localhost:8081`, which assumes the API runs on the same machine and uses the default port.
+
 ## Usage <a name="usage"></a>
 
 Once running, the web app can be accessed at `localhost:3000`
-
-Currently, this only supports a local Tailfin API instance running at `localhost:8081`. This can be modified by manually editing `app/util/api.ts`.
 
 ## Roadmap <a name="roadmap"></a>
 
