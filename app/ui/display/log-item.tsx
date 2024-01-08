@@ -46,23 +46,31 @@ export function VerticalLogItem({
   if (date) content = (content as string).split("T")[0];
 
   return (
-    <Card shadow="sm" withBorder>
+    <Card shadow="sm" withBorder h="100%">
       <Stack gap="xs" align="center" h="100%">
         <Text c="dimmed" style={{ textalign: "center" }}>
           {label}
         </Text>
         {list ? (
-          <Group>
-            {(content as string[]).map((item) => (
-              <Badge key={randomId()} size="lg">
-                {item}
-              </Badge>
-            ))}
-          </Group>
+          <>
+            {(content as string[]).length > 0 ? (
+              <Text size="lg">
+                {(content as string[]).map((item) => (
+                  <Badge key={randomId()} size="lg" mx="xs">
+                    {item}
+                  </Badge>
+                ))}
+              </Text>
+            ) : (
+              <Text size="lg" style={{ textAlign: "center" }} c="dimmed">
+                <IconX />
+              </Text>
+            )}
+          </>
         ) : (
           <Text
             size="lg"
-            style={{ textalign: "center" }}
+            style={{ textAlign: "center" }}
             c={content === "" ? "dimmed" : ""}
           >
             {content === "" ? <IconX /> : content}

@@ -16,18 +16,10 @@ import {
   Text,
   Modal,
   Button,
-  Badge,
-  Fieldset,
-  Collapse,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate, useParams } from "@remix-run/react";
-import {
-  IconPencil,
-  IconPlaneTilt,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function Flight() {
@@ -169,11 +161,11 @@ export default function Flight() {
                         {log.waypoint_from || log.waypoint_to ? (
                           <Group grow>
                             <VerticalLogItem
-                              label="Waypoint From"
+                              label="From"
                               content={log.waypoint_from}
                             />
                             <VerticalLogItem
-                              label="Waypoint To"
+                              label="To"
                               content={log.waypoint_to}
                             />
                           </Group>
@@ -261,29 +253,29 @@ export default function Flight() {
                     <CollapsibleFieldset legend="Hours" w="100%" mt="sm">
                       <Group grow>
                         <VerticalLogItem
-                          label="Total Time"
+                          label="Total"
                           content={log.time_total}
                           hours
                         />
                         <VerticalLogItem
-                          label="Time Solo"
+                          label="Solo"
                           content={log.time_solo}
                           hours
                         />
                         <VerticalLogItem
-                          label="Time Night"
+                          label="Night"
                           content={log.time_night}
                           hours
                         />
                       </Group>
                       <Group grow mt="sm">
                         <VerticalLogItem
-                          label="Time PIC"
+                          label="PIC"
                           content={log.time_pic}
                           hours
                         />
                         <VerticalLogItem
-                          label="Time SIC"
+                          label="SIC"
                           content={log.time_sic}
                           hours
                         />
@@ -297,42 +289,48 @@ export default function Flight() {
                       >
                         <Group grow>
                           <VerticalLogItem
-                            label="Time Cross-Country"
+                            label="Hours"
                             content={log.time_xc}
                             hours
                           />
                           <VerticalLogItem
-                            label="Cross-Country Distance"
+                            label="Distance"
                             content={log.dist_xc}
                             decimal={2}
                           />
                         </Group>
                       </CollapsibleFieldset>
                     ) : null}
-                    <CollapsibleFieldset
-                      legend="Takeoffs/Landings"
-                      w="100%"
-                      mt="sm"
-                    >
-                      <Group grow>
-                        <VerticalLogItem
-                          label="Takeoffs (Day)"
-                          content={log.takeoffs_day}
-                        />
-                        <VerticalLogItem
-                          label="Landings (Day)"
-                          content={log.landings_day}
-                        />
-                        <VerticalLogItem
-                          label="Takeoffs (Night)"
-                          content={log.takeoffs_night}
-                        />
-                        <VerticalLogItem
-                          label="Landings (Night)"
-                          content={log.landings_night}
-                        />
-                      </Group>
-                    </CollapsibleFieldset>
+                    <Grid w="100%" mt="sm">
+                      <Grid.Col span={6}>
+                        <CollapsibleFieldset legend="Takeoffs" w="100%">
+                          <Group grow>
+                            <VerticalLogItem
+                              label="Day"
+                              content={log.takeoffs_day}
+                            />
+                            <VerticalLogItem
+                              label="Night"
+                              content={log.takeoffs_night}
+                            />
+                          </Group>
+                        </CollapsibleFieldset>
+                      </Grid.Col>
+                      <Grid.Col span={6}>
+                        <CollapsibleFieldset legend="Landings" w="100%">
+                          <Group grow>
+                            <VerticalLogItem
+                              label="Day"
+                              content={log.landings_day}
+                            />
+                            <VerticalLogItem
+                              label="Night"
+                              content={log.landings_night}
+                            />
+                          </Group>
+                        </CollapsibleFieldset>
+                      </Grid.Col>
+                    </Grid>
                     {log.time_instrument ||
                     log.time_sim_instrument ||
                     log.holds_instrument ? (
