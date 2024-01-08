@@ -26,10 +26,10 @@ export default function Navbar({
         <NavLink
           p="md"
           component={Link}
-          to="/logbook"
+          to="/logbook/dashboard"
           label="Dashboard"
           leftSection={<IconPlaneDeparture />}
-          active={page == null}
+          active={page == "dashboard"}
           onClick={() => (opened ? toggle() : null)}
         />
         <NavLink

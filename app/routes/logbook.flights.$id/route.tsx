@@ -307,36 +307,18 @@ export default function Flight() {
                         </Group>
                       </CollapsibleFieldset>
                     ) : null}
-                    <Grid w="100%" mt="sm">
-                      <Grid.Col span={6}>
-                        <CollapsibleFieldset legend="Takeoffs" w="100%">
-                          <Group grow>
-                            <VerticalLogItem
-                              label="Day"
-                              content={log.takeoffs_day}
-                            />
-                            <VerticalLogItem
-                              label="Night"
-                              content={log.takeoffs_night}
-                            />
-                          </Group>
-                        </CollapsibleFieldset>
-                      </Grid.Col>
-                      <Grid.Col span={6}>
-                        <CollapsibleFieldset legend="Landings" w="100%">
-                          <Group grow>
-                            <VerticalLogItem
-                              label="Day"
-                              content={log.landings_day}
-                            />
-                            <VerticalLogItem
-                              label="Night"
-                              content={log.landings_night}
-                            />
-                          </Group>
-                        </CollapsibleFieldset>
-                      </Grid.Col>
-                    </Grid>
+                    <CollapsibleFieldset legend="Landings" w="100%">
+                      <Group grow>
+                        <VerticalLogItem
+                          label="Day"
+                          content={log.landings_day}
+                        />
+                        <VerticalLogItem
+                          label="Night"
+                          content={log.landings_night}
+                        />
+                      </Group>
+                    </CollapsibleFieldset>
                     {log.time_instrument ||
                     log.time_sim_instrument ||
                     log.holds_instrument ? (

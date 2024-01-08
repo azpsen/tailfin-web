@@ -67,9 +67,7 @@ export default function FlightForm({
       time_xc: 0.0,
       dist_xc: 0.0,
 
-      takeoffs_day: 0,
       landings_day: 0,
-      takeoffs_night: 0,
       landings_night: 0,
 
       time_instrument: 0.0,
@@ -171,13 +169,9 @@ export default function FlightForm({
 
           <Fieldset legend="Cross-Country" mt="md">
             <Group justify="center" grow>
-              <ZeroHourInput
-                form={form}
-                field="time_xc"
-                label="Time Cross-Country"
-              />
+              <ZeroHourInput form={form} field="time_xc" label="Hours" />
               <NumberInput
-                label="Distance Cross-Country"
+                label="Distance"
                 decimalScale={1}
                 min={0}
                 fixedDecimalScale
@@ -198,32 +192,12 @@ export default function FlightForm({
             </Group>
           </Fieldset>
 
-          {/* Takeoffs and Landings */}
+          {/* Landings */}
 
-          <Fieldset legend="Takeoffs and Landings" mt="md">
+          <Fieldset legend="Landings" mt="md">
             <Group justify="center" grow>
-              <ZeroIntInput
-                form={form}
-                field="takeoffs_day"
-                label="Day Takeoffs"
-              />
-              <ZeroIntInput
-                form={form}
-                field="landings_day"
-                label="Day Landings"
-              />
-            </Group>
-            <Group justify="center" grow mt="md">
-              <ZeroIntInput
-                form={form}
-                field="takeoffs_night"
-                label="Night Takeoffs"
-              />
-              <ZeroIntInput
-                form={form}
-                field="landings_night"
-                label="Night Landings"
-              />
+              <ZeroIntInput form={form} field="landings_day" label="Day" />
+              <ZeroIntInput form={form} field="landings_night" label="Night" />
             </Group>
           </Fieldset>
 

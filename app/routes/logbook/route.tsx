@@ -25,6 +25,8 @@ export default function Index() {
   useEffect(() => {
     if (!loading && !user) {
       navigate("/login");
+    } else {
+      navigate("/logbook/dashboard");
     }
   }, [user, loading, navigate]);
 

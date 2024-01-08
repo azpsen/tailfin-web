@@ -23,9 +23,7 @@ type FlightBaseSchema = {
   time_xc: number;
   dist_xc: number;
 
-  takeoffs_day: number;
   landings_day: number;
-  takeoffs_night: number;
   landings_night: number;
 
   time_instrument: number;
