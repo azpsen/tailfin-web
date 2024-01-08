@@ -116,26 +116,30 @@ function FlightsListDisplay({
                                           </Text>
                                           {flight.waypoint_from ||
                                           flight.waypoint_to ? (
-                                            <Text>/</Text>
+                                            <>
+                                              <Text>/</Text>
+                                              <Group gap="xs">
+                                                {flight.waypoint_from ? (
+                                                  <Text>
+                                                    {flight.waypoint_from}
+                                                  </Text>
+                                                ) : (
+                                                  ""
+                                                )}
+                                                {flight.waypoint_from &&
+                                                flight.waypoint_to ? (
+                                                  <IconArrowRightTail />
+                                                ) : null}
+                                                {flight.waypoint_to ? (
+                                                  <Text>
+                                                    {flight.waypoint_to}
+                                                  </Text>
+                                                ) : (
+                                                  ""
+                                                )}
+                                              </Group>
+                                            </>
                                           ) : null}
-                                          <Group gap="xs">
-                                            {flight.waypoint_from ? (
-                                              <Text>
-                                                {flight.waypoint_from}
-                                              </Text>
-                                            ) : (
-                                              ""
-                                            )}
-                                            {flight.waypoint_from &&
-                                            flight.waypoint_to ? (
-                                              <IconArrowRightTail />
-                                            ) : null}
-                                            {flight.waypoint_to ? (
-                                              <Text>{flight.waypoint_to}</Text>
-                                            ) : (
-                                              ""
-                                            )}
-                                          </Group>
                                         </Group>
                                       }
                                       description={

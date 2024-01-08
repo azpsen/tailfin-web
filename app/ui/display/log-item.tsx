@@ -27,6 +27,7 @@ export function VerticalLogItem({
   time = false,
   date = false,
   list = false,
+  listColor = "",
 }: {
   label: string;
   content: string | string[] | null;
@@ -35,6 +36,7 @@ export function VerticalLogItem({
   time?: boolean;
   date?: boolean;
   list?: boolean;
+  listColor?: string;
 }) {
   if (content === null) content = "";
   if (decimal > 0) content = Number(content).toFixed(decimal);
@@ -56,7 +58,7 @@ export function VerticalLogItem({
             {(content as string[]).length > 0 ? (
               <Text size="lg">
                 {(content as string[]).map((item) => (
-                  <Badge key={randomId()} size="lg" mx="xs">
+                  <Badge key={randomId()} size="lg" mx="xs" color={listColor}>
                     {item}
                   </Badge>
                 ))}

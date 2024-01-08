@@ -130,11 +130,17 @@ export default function Flight() {
                       {(log.pax || log.crew) &&
                       (log.pax.length > 0 || log.crew.length > 0) ? (
                         <Group grow mt="sm">
-                          <VerticalLogItem label="Pax" content={log.pax} list />
+                          <VerticalLogItem
+                            label="Pax"
+                            content={log.pax}
+                            list
+                            listColor="gray"
+                          />
                           <VerticalLogItem
                             label="Crew"
                             content={log.crew}
                             list
+                            listColor="gray"
                           />
                         </Group>
                       ) : null}
