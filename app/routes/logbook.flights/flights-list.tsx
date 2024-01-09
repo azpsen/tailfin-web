@@ -1,3 +1,4 @@
+import ErrorDisplay from "@/ui/error-display";
 import { useApi } from "@/util/api";
 import { FlightConciseSchema } from "@/util/types";
 import {
@@ -18,6 +19,7 @@ import {
   IconArrowRightTail,
   IconPlaneTilt,
   IconPlus,
+  IconX,
 } from "@tabler/icons-react";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
@@ -62,124 +64,135 @@ function FlightsListDisplay({
   return (
     <>
       {flights.data ? (
-        Object.entries(flights.data)
-          .reverse()
-          .map(([year, months]) => (
-            <>
-              <NavLink
-                key={randomId()}
-                label={`-- ${year} --`}
-                fw={700}
-                style={{ textAlign: "center" }}
-                defaultOpened
-                childrenOffset={0}
-              >
-                <>
-                  <Divider />
-                  {Object.entries(months)
-                    .reverse()
-                    .map(([month, days]) => (
-                      <NavLink
-                        key={randomId()}
-                        label={monthNames[Number(month) - 1]}
-                        fw={500}
-                        style={{ textAlign: "center" }}
-                        defaultOpened
-                      >
-                        <Divider />
-                        {Object.entries(days)
-                          .reverse()
-                          .map(([, logs]) => (
-                            <>
-                              {logs
-                                .reverse()
-                                .map((flight: FlightConciseSchema) => (
-                                  <>
-                                    <NavLink
-                                      key={randomId()}
-                                      component={Link}
-                                      to={`/logbook/flights/${flight.id}`}
-                                      label={
-                                        <Group>
-                                          <Badge
-                                            color="gray"
-                                            size="lg"
-                                            radius="sm"
-                                            px="xs"
-                                          >
-                                            {flight.date}
-                                          </Badge>
-                                          <Text fw={500}>
-                                            {`${Number(
-                                              flight.time_total
-                                            ).toFixed(1)} hr`}
+        Object.entries(flights.data)?.length === 0 ? (
+          <Center h="calc(100vh - 95px - 50px)">
+            <Stack align="center">
+              <IconX size="3rem" />
+              <Center>No flights</Center>
+            </Stack>
+          </Center>
+        ) : (
+          Object.entries(flights.data)
+            .reverse()
+            .map(([year, months]) => (
+              <>
+                <NavLink
+                  key={randomId()}
+                  label={`-- ${year} --`}
+                  fw={700}
+                  style={{ textAlign: "center" }}
+                  defaultOpened
+                  childrenOffset={0}
+                >
+                  <>
+                    <Divider />
+                    {Object.entries(months)
+                      .reverse()
+                      .map(([month, days]) => (
+                        <NavLink
+                          key={randomId()}
+                          label={monthNames[Number(month) - 1]}
+                          fw={500}
+                          style={{ textAlign: "center" }}
+                          defaultOpened
+                        >
+                          <Divider />
+                          {Object.entries(days)
+                            .reverse()
+                            .map(([, logs]) => (
+                              <>
+                                {logs
+                                  .reverse()
+                                  .map((flight: FlightConciseSchema) => (
+                                    <>
+                                      <NavLink
+                                        key={randomId()}
+                                        component={Link}
+                                        to={`/logbook/flights/${flight.id}`}
+                                        label={
+                                          <Group>
+                                            <Badge
+                                              color="gray"
+                                              size="lg"
+                                              radius="sm"
+                                              px="xs"
+                                            >
+                                              {flight.date}
+                                            </Badge>
+                                            <Text fw={500}>
+                                              {`${Number(
+                                                flight.time_total
+                                              ).toFixed(1)} hr`}
+                                            </Text>
+                                            {flight.waypoint_from ||
+                                            flight.waypoint_to ? (
+                                              <>
+                                                <Text>/</Text>
+                                                <Group gap="xs">
+                                                  {flight.waypoint_from ? (
+                                                    <Text>
+                                                      {flight.waypoint_from}
+                                                    </Text>
+                                                  ) : (
+                                                    ""
+                                                  )}
+                                                  {flight.waypoint_from &&
+                                                  flight.waypoint_to ? (
+                                                    <IconArrowRightTail />
+                                                  ) : null}
+                                                  {flight.waypoint_to ? (
+                                                    <Text>
+                                                      {flight.waypoint_to}
+                                                    </Text>
+                                                  ) : (
+                                                    ""
+                                                  )}
+                                                </Group>
+                                              </>
+                                            ) : null}
+                                          </Group>
+                                        }
+                                        description={
+                                          <Text lineClamp={1}>
+                                            {flight.comments
+                                              ? flight.comments
+                                              : "(No Comment)"}
                                           </Text>
-                                          {flight.waypoint_from ||
-                                          flight.waypoint_to ? (
-                                            <>
-                                              <Text>/</Text>
-                                              <Group gap="xs">
-                                                {flight.waypoint_from ? (
-                                                  <Text>
-                                                    {flight.waypoint_from}
-                                                  </Text>
-                                                ) : (
-                                                  ""
-                                                )}
-                                                {flight.waypoint_from &&
-                                                flight.waypoint_to ? (
-                                                  <IconArrowRightTail />
-                                                ) : null}
-                                                {flight.waypoint_to ? (
-                                                  <Text>
-                                                    {flight.waypoint_to}
-                                                  </Text>
-                                                ) : (
-                                                  ""
-                                                )}
-                                              </Group>
-                                            </>
-                                          ) : null}
-                                        </Group>
-                                      }
-                                      description={
-                                        <Text lineClamp={1}>
-                                          {flight.comments
-                                            ? flight.comments
-                                            : "(No Comment)"}
-                                        </Text>
-                                      }
-                                      rightSection={
-                                        flight.aircraft ? (
-                                          <Badge
-                                            key={randomId()}
-                                            leftSection={
-                                              <IconPlaneTilt size="1rem" />
-                                            }
-                                            color="gray"
-                                            size="lg"
-                                          >
-                                            {flight.aircraft}
-                                          </Badge>
-                                        ) : null
-                                      }
-                                      active={page === flight.id}
-                                    />
-                                    <Divider />
-                                  </>
-                                ))}
-                            </>
-                          ))}
-                      </NavLink>
-                    ))}
-                </>
-              </NavLink>
-            </>
-          ))
+                                        }
+                                        rightSection={
+                                          flight.aircraft ? (
+                                            <Badge
+                                              key={randomId()}
+                                              leftSection={
+                                                <IconPlaneTilt size="1rem" />
+                                              }
+                                              color="gray"
+                                              size="lg"
+                                            >
+                                              {flight.aircraft}
+                                            </Badge>
+                                          ) : null
+                                        }
+                                        active={page === flight.id}
+                                      />
+                                      <Divider />
+                                    </>
+                                  ))}
+                              </>
+                            ))}
+                        </NavLink>
+                      ))}
+                  </>
+                </NavLink>
+              </>
+            ))
+        )
       ) : flights.isLoading ? (
         <Center h="calc(100vh - 95px - 50px)">
           <Loader />
         </Center>
+      ) : flights.isError ? (
+        <ErrorDisplay error={flights.error?.message} />
       ) : (
         <Center h="calc(100vh - 95px - 50px)">
           <Text p="sm">No Flights</Text>

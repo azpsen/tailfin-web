@@ -45,8 +45,11 @@ export default function Index() {
             staleTime: 1000,
             retry: (failureCount, error: Error) => {
               return (
-                !error ||
-                (error instanceof AxiosError && error.response?.status !== 401)
+                failureCount < 5 &&
+                (!error ||
+                  (error instanceof AxiosError &&
+                    error.response?.status !== 401 &&
+                    error.response?.status !== 404))
               );
             },
           },
