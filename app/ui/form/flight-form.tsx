@@ -33,7 +33,7 @@ export default function FlightForm({
 }: {
   onSubmit: (values: FlightFormSchema) => void;
   isError: boolean;
-  error: AxiosError | null;
+  error: Error | null;
   initialValues?: FlightFormSchema | null;
   mah?: string;
   submitButtonLabel?: string;
@@ -262,7 +262,9 @@ export default function FlightForm({
       <Group justify="flex-end" mt="md">
         {isError ? (
           <Text c="red" fw={700}>
-            {error?.message}
+            {error instanceof AxiosError
+              ? error.response?.data.detail
+              : error?.message}
           </Text>
         ) : null}
         {withCancelButton ? (
