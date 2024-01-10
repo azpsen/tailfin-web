@@ -3,8 +3,9 @@ import { Stack, NavLink } from "@mantine/core";
 import { Link, useLocation } from "@remix-run/react";
 import {
   IconBook2,
+  IconDashboard,
   IconLogout,
-  IconPlaneDeparture,
+  IconPlaneTilt,
   IconUser,
 } from "@tabler/icons-react";
 
@@ -28,7 +29,7 @@ export default function Navbar({
           component={Link}
           to="/logbook/dashboard"
           label="Dashboard"
-          leftSection={<IconPlaneDeparture />}
+          leftSection={<IconDashboard />}
           active={page == "dashboard"}
           onClick={() => (opened ? toggle() : null)}
         />
@@ -39,6 +40,15 @@ export default function Navbar({
           label="Flights"
           leftSection={<IconBook2 />}
           active={page === "flights"}
+          onClick={() => (opened ? toggle() : null)}
+        />
+        <NavLink
+          p="md"
+          component={Link}
+          to="/logbook/aircraft"
+          label="Aircraft"
+          leftSection={<IconPlaneTilt />}
+          active={page === "aircraft"}
           onClick={() => (opened ? toggle() : null)}
         />
       </Stack>

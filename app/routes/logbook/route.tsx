@@ -1,7 +1,7 @@
 import { TailfinAppShell } from "@/ui/nav/app-shell";
 import { useAuth } from "@/util/auth";
 import type { MetaFunction } from "@remix-run/node";
-import { Outlet, useNavigate } from "@remix-run/react";
+import { Outlet, useLocation, useNavigate } from "@remix-run/react";
 import {
   QueryCache,
   QueryClient,
@@ -22,13 +22,15 @@ export default function Index() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
+  const location = useLocation();
+
   useEffect(() => {
     if (!loading && !user) {
       navigate("/login");
-    } else {
+    } else if (location.pathname === "/logbook") {
       navigate("/logbook/dashboard");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, location]);
 
   const [queryClient] = useState(
     () =>

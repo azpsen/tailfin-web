@@ -31,11 +31,16 @@ export default function Me() {
       current_psk: string;
       new_psk: string;
       confirm_new_psk: string;
-    }) =>
+    }) => {
+      console.log({
+        current_password: values.current_psk,
+        new_password: values.new_psk,
+      });
       await client.put(`/users/me/password`, {
         current_password: values.current_psk,
         new_password: values.new_psk,
-      }),
+      });
+    },
   });
 
   const updatePskForm = useForm({
@@ -95,14 +100,16 @@ export default function Me() {
                 {...updatePskForm.getInputProps("current_psk")}
               />
               <PasswordInput
+                mt="sm"
                 label="New Password"
                 {...updatePskForm.getInputProps("new_psk")}
               />
               <PasswordInput
+                mt="sm"
                 label="Confirm New Password"
                 {...updatePskForm.getInputProps("confirm_new_psk")}
               />
-              <Group justify="flex-end" mt="md">
+              <Group justify="flex-end" mt="lg">
                 {updatePassword.isPending ? (
                   <Text>Updating...</Text>
                 ) : updatePassword.isError ? (

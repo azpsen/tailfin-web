@@ -88,11 +88,9 @@ export default function Flight() {
           ) : flight.data ? (
             <>
               <Group justify="space-between" px="xl">
-                <Group>
-                  <Title order={2} py="lg" style={{ textAlign: "center" }}>
-                    Flight Log
-                  </Title>
-                </Group>
+                <Title order={2} py="lg" style={{ textAlign: "center" }}>
+                  Flight Log
+                </Title>
                 <Group>
                   <Tooltip
                     label="Edit Flight"
@@ -186,39 +184,20 @@ export default function Flight() {
                         ) : null}
                       </CollapsibleFieldset>
                     ) : null}
-                    {log.hobbs_start ||
-                    log.hobbs_end ||
-                    log.tach_start ||
-                    log.tach_end ? (
+                    {log.hobbs_start || log.hobbs_end ? (
                       <CollapsibleFieldset legend="Times" w="100%" mt="sm">
-                        {log.hobbs_start || log.hobbs_end ? (
-                          <Group grow>
-                            <VerticalLogItem
-                              label="Hobbs Start"
-                              content={log.hobbs_start}
-                              hours
-                            />
-                            <VerticalLogItem
-                              label="Hobbs End"
-                              content={log.hobbs_end}
-                              hours
-                            />
-                          </Group>
-                        ) : null}
-                        {log.tach_start || log.tach_end ? (
-                          <Group grow mt="sm">
-                            <VerticalLogItem
-                              label="Tach Start"
-                              content={log.tach_start}
-                              hours
-                            />
-                            <VerticalLogItem
-                              label="Tach End"
-                              content={log.tach_end}
-                              hours
-                            />
-                          </Group>
-                        ) : null}
+                        <Group grow>
+                          <VerticalLogItem
+                            label="Hobbs Start"
+                            content={log.hobbs_start}
+                            hours
+                          />
+                          <VerticalLogItem
+                            label="Hobbs End"
+                            content={log.hobbs_end}
+                            hours
+                          />
+                        </Group>
                       </CollapsibleFieldset>
                     ) : null}
                     {log.time_start ||

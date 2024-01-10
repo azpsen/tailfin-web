@@ -3,6 +3,8 @@ import utc from "dayjs/plugin/utc.js";
 
 dayjs.extend(utc);
 
+/* FLIGHTS */
+
 type FlightBaseSchema = {
   aircraft: string | null;
   waypoint_from: string | null;
@@ -11,8 +13,6 @@ type FlightBaseSchema = {
 
   hobbs_start: number | null;
   hobbs_end: number | null;
-  tach_start: number | null;
-  tach_end: number | null;
 
   time_total: number;
   time_pic: number;
@@ -96,8 +96,6 @@ const flightCreateHelper = (
       date: date.utc().startOf("day").toISOString(),
       hobbs_start: values.hobbs_start ? Number(values.hobbs_start) : null,
       hobbs_end: values.hobbs_end ? Number(values.hobbs_end) : null,
-      tach_start: values.tach_start ? Number(values.tach_start) : null,
-      tach_end: values.tach_end ? Number(values.tach_end) : null,
       time_start: date
         .utc()
         .hour(Math.floor((values.time_start ?? 0) / 100))
@@ -159,6 +157,30 @@ const flightEditHelper = (
   }
 };
 
+/* AIRCRAFT */
+
+type AircraftSchema = {
+  id: string;
+
+  tail_no: string;
+  make: string;
+  model: string;
+  aircraft_category: string;
+  aircraft_class: string;
+
+  hobbs: number;
+};
+
+type AircraftFormSchema = {
+  tail_no: string;
+  make: string;
+  model: string;
+  aircraft_category: string;
+  aircraft_class: string;
+
+  hobbs: number;
+};
+
 export {
   flightEditHelper,
   flightCreateHelper,
@@ -166,4 +188,6 @@ export {
   type FlightCreateSchema,
   type FlightDisplaySchema,
   type FlightConciseSchema,
+  type AircraftSchema,
+  type AircraftFormSchema,
 };

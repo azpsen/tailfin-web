@@ -3,7 +3,6 @@ import { FlightFormSchema, flightCreateHelper } from "@/util/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/util/api";
 import { useNavigate } from "@remix-run/react";
-import { AxiosError } from "axios";
 import FlightForm from "@/ui/form/flight-form";
 
 export default function NewFlight() {
@@ -20,9 +19,6 @@ export default function NewFlight() {
         return res.data;
       }
       throw new Error("Flight creation failed");
-    },
-    retry: (failureCount, error: AxiosError) => {
-      return !error || error.response?.status !== 401;
     },
     onSuccess: async (data: { id: string }) => {
       await queryClient.invalidateQueries({ queryKey: ["flights-list"] });

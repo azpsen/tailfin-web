@@ -50,8 +50,6 @@ export default function FlightForm({
 
       hobbs_start: null,
       hobbs_end: null,
-      tach_start: null,
-      tach_end: null,
 
       time_start: null,
       time_off: null,
@@ -123,10 +121,6 @@ export default function FlightForm({
             <Group justify="center" grow>
               <HourInput form={form} field="hobbs_start" label="Hobbs Start" />
               <HourInput form={form} field="hobbs_end" label="Hobbs End" />
-            </Group>
-            <Group justify="center" grow mt="md">
-              <HourInput form={form} field="tach_start" label="Tach Start" />
-              <HourInput form={form} field="tach_end" label="Tach End" />
             </Group>
           </Fieldset>
 
