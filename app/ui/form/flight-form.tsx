@@ -218,6 +218,7 @@ export default function FlightForm({
                         ]
                       : null
                   }
+                  allowDeselect={false}
                   value={aircraft}
                   {...form.getInputProps("aircraft")}
                   onChange={(_value, option) => {

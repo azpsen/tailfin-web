@@ -5,13 +5,13 @@ import { IconFeather } from "@tabler/icons-react";
 export default function Flights() {
   return (
     <>
-      <Container visibleFrom="md" h="calc(100vh - 95px)">
+      <Container visibleFrom="lg" h="calc(100vh - 95px)">
         <Stack align="center" justify="center" h="100%">
           <IconFeather size="3rem" />
           <Center>Select a flight</Center>
         </Stack>
       </Container>
-      <Container hiddenFrom="md">
+      <Container hiddenFrom="lg">
         <MobileFlightsList />
       </Container>
     </>

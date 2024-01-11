@@ -1,6 +1,7 @@
 import ErrorDisplay from "@/ui/error-display";
 import { useApi } from "@/util/api";
-import { FlightConciseSchema } from "@/util/types";
+import { useAircraft, useFlights } from "@/util/hooks";
+import { AircraftSchema, FlightConciseSchema } from "@/util/types";
 import {
   NavLink,
   Text,
@@ -12,8 +13,10 @@ import {
   Badge,
   Group,
   Divider,
+  Modal,
+  Select,
 } from "@mantine/core";
-import { randomId } from "@mantine/hooks";
+import { randomId, useDisclosure } from "@mantine/hooks";
 import { Link, useLocation, useNavigate } from "@remix-run/react";
 import {
   IconArrowRightTail,
@@ -21,19 +24,12 @@ import {
   IconPlus,
   IconX,
 } from "@tabler/icons-react";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
-
-function useFlights() {
-  const client = useApi();
-
-  const flights = useQuery({
-    queryKey: ["flights-list"],
-    queryFn: async () =>
-      await client.get(`/flights/by-date?order=1`).then((res) => res.data),
-  });
-
-  return flights;
-}
+import {
+  UseQueryResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useState } from "react";
 
 function FlightsListDisplay({
   flights,
@@ -202,24 +198,76 @@ function FlightsListDisplay({
   );
 }
 
+function AircraftFilter({
+  aircraft,
+  setAircraft,
+  query = "flights-list",
+}: {
+  aircraft: string;
+  setAircraft: (aircraft: string) => void;
+  query?: string;
+}) {
+  const getAircraft = useAircraft();
+  const queryClient = useQueryClient();
+
+  return (
+    <Select
+      placeholder="Filter by Aircraft..."
+      data={
+        getAircraft.isFetched
+          ? getAircraft.data?.map((item: AircraftSchema) => ({
+              value: item.tail_no,
+              label: item.tail_no,
+            }))
+          : ""
+      }
+      value={aircraft}
+      onChange={(_value, option) => {
+        setAircraft(option?.label ?? "");
+        queryClient.invalidateQueries({
+          queryKey: [query, aircraft],
+        });
+      }}
+      clearable
+    />
+  );
+}
+
 export function FlightsList() {
   const location = useLocation();
   const page = location.pathname.split("/")[3];
 
-  const flights = useFlights();
+  const [aircraft, setAircraft] = useState("");
+
+  const client = useApi();
+
+  // const flights = useFlights("aircraft", aircraft);
+  const flights = useQuery({
+    queryKey: ["flights-list", aircraft],
+    queryFn: async () =>
+      await client
+        .get(
+          `/flights/by-date?order=1${
+            aircraft !== "" ? `&filter=aircraft&filter_val=${aircraft}` : ""
+          }`
+        )
+        .then((res) => res.data),
+  });
 
   const navigate = useNavigate();
 
   return (
     <Stack p="0" m="0" gap="0">
-      <Button
-        variant="outline"
-        leftSection={<IconPlus />}
-        mb="md"
-        onClick={() => navigate("/logbook/flights/new")}
-      >
-        Add
-      </Button>
+      <Group grow preventGrowOverflow={false}>
+        <AircraftFilter aircraft={aircraft} setAircraft={setAircraft} />
+        <Button
+          variant="outline"
+          leftSection={<IconPlus />}
+          onClick={() => navigate("/logbook/flights/new")}
+        >
+          New Flight
+        </Button>
+      </Group>
       <ScrollArea h="calc(100vh - 95px - 50px)">
         <FlightsListDisplay flights={flights} page={page} />
       </ScrollArea>
@@ -231,7 +279,21 @@ export function MobileFlightsList() {
   const location = useLocation();
   const page = location.pathname.split("/")[3];
 
-  const flights = useFlights();
+  const [aircraft, setAircraft] = useState("");
+
+  const client = useApi();
+
+  const flights = useQuery({
+    queryKey: ["flights-list", aircraft],
+    queryFn: async () =>
+      await client
+        .get(
+          `/flights/by-date?order=1${
+            aircraft !== "" ? `&filter=aircraft&filter_val=${aircraft}` : ""
+          }`
+        )
+        .then((res) => res.data),
+  });
 
   const navigate = useNavigate();
 
@@ -239,15 +301,17 @@ export function MobileFlightsList() {
     <Stack p="0" m="0" justify="space-between" h="calc(100vh - 95px)">
       <ScrollArea h="calc(100vh - 95px - 50px">
         <FlightsListDisplay flights={flights} page={page} />
-      </ScrollArea>
-      <Button
-        variant="outline"
-        leftSection={<IconPlus />}
-        mt="md"
-        onClick={() => navigate("/logbook/flights/new")}
-      >
-        Add
-      </Button>
+      </ScrollArea>{" "}
+      <Group grow preventGrowOverflow={false} wrap="nowrap">
+        <AircraftFilter aircraft={aircraft} setAircraft={setAircraft} />
+        <Button
+          variant="outline"
+          leftSection={<IconPlus />}
+          onClick={() => navigate("/logbook/flights/new")}
+        >
+          Add
+        </Button>
+      </Group>
     </Stack>
   );
 }
