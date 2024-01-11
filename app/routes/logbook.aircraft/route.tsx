@@ -1,6 +1,7 @@
 import ErrorDisplay from "@/ui/error-display";
 import AircraftForm from "@/ui/form/aircraft-form";
 import { useApi } from "@/util/api";
+import { useAircraft } from "@/util/hooks";
 import { AircraftFormSchema, AircraftSchema } from "@/util/types";
 import {
   ActionIcon,
@@ -11,37 +12,19 @@ import {
   Group,
   Loader,
   Modal,
-  NumberInput,
   ScrollArea,
-  Select,
   Stack,
   Text,
-  TextInput,
   Title,
   Tooltip,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import { randomId, useDisclosure } from "@mantine/hooks";
 import { IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import {
   UseQueryResult,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useState } from "react";
-
-function useAircraft() {
-  const client = useApi();
-
-  const aircraft = useQuery({
-    queryKey: ["aircraft-list"],
-    queryFn: async () => await client.get(`/aircraft`).then((res) => res.data),
-  });
-
-  return aircraft;
-}
 
 function AircraftCard({ aircraft }: { aircraft: AircraftSchema }) {
   const [deleteOpened, { open: openDelete, close: closeDelete }] =

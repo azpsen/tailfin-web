@@ -1,4 +1,4 @@
-import { Container, Stack, Title } from "@mantine/core";
+import { Center, Container, Loader, Stack, Title } from "@mantine/core";
 import {
   FlightFormSchema,
   flightCreateHelper,
@@ -9,6 +9,7 @@ import { useApi } from "@/util/api";
 import { useNavigate, useParams } from "@remix-run/react";
 import { AxiosError } from "axios";
 import FlightForm from "@/ui/form/flight-form";
+import ErrorDisplay from "@/ui/error-display";
 
 export default function EditFlight() {
   const params = useParams();
@@ -47,16 +48,30 @@ export default function EditFlight() {
       <Stack>
         <Title order={2}>Edit Flight</Title>
 
-        <FlightForm
-          initialValues={flightEditHelper(flight.data) ?? null}
-          onSubmit={editFlight.mutate}
-          isError={editFlight.isError}
-          error={editFlight.error}
-          submitButtonLabel="Update"
-          withCancelButton
-          cancelFunc={() => navigate(`/logbook/flights/${params.id}`)}
-          mah="calc(100vh - 95px - 110px)"
-        />
+        {flight.isLoading ? (
+          <Center h="calc(100vh - 95px - 110px)">
+            <Loader />
+          </Center>
+        ) : flight.isError ? (
+          <Center h="calc(100vh - 95px - 110px)">
+            <ErrorDisplay error={flight.error.message} />
+          </Center>
+        ) : (
+          <FlightForm
+            initialValues={
+              flight.data ? flightEditHelper(flight.data) ?? null : null
+            }
+            onSubmit={editFlight.mutate}
+            isPending={editFlight.isPending}
+            isError={editFlight.isError}
+            error={editFlight.error}
+            submitButtonLabel="Update"
+            withCancelButton
+            cancelFunc={() => navigate(`/logbook/flights/${params.id}`)}
+            mah="calc(100vh - 95px - 110px)"
+            autofillHobbs={false}
+          />
+        )}
       </Stack>
     </Container>
   );

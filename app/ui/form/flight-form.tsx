@@ -1,15 +1,23 @@
-import { FlightFormSchema } from "@/util/types";
 import {
+  AircraftFormSchema,
+  AircraftSchema,
+  FlightFormSchema,
+} from "@/util/types";
+import {
+  ActionIcon,
   Button,
   CloseButton,
   Container,
   Fieldset,
   Group,
+  Modal,
   NumberInput,
   ScrollArea,
+  Select,
   Text,
   TextInput,
   Textarea,
+  Tooltip,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -18,11 +26,18 @@ import { HourInput, ZeroHourInput } from "./hour-input";
 import TimeInput from "./time-input";
 import { ZeroIntInput } from "./int-input";
 import ListInput from "./list-input";
-import { IconPencil } from "@tabler/icons-react";
+import { IconPencil, IconPlaneTilt, IconPlus } from "@tabler/icons-react";
 import { AxiosError } from "axios";
+import { useDisclosure } from "@mantine/hooks";
+import AircraftForm from "./aircraft-form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useApi } from "@/util/api";
+import { useAircraft } from "@/util/hooks";
+import { useEffect, useState } from "react";
 
 export default function FlightForm({
   onSubmit,
+  isPending,
   isError,
   error,
   initialValues,
@@ -30,8 +45,10 @@ export default function FlightForm({
   submitButtonLabel,
   withCancelButton,
   cancelFunc,
+  autofillHobbs = false,
 }: {
   onSubmit: (values: FlightFormSchema) => void;
+  isPending: boolean;
   isError: boolean;
   error: Error | null;
   initialValues?: FlightFormSchema | null;
@@ -39,6 +56,7 @@ export default function FlightForm({
   submitButtonLabel?: string;
   withCancelButton?: boolean;
   cancelFunc?: () => void;
+  autofillHobbs?: boolean;
 }) {
   const form = useForm<FlightFormSchema>({
     initialValues: initialValues ?? {
@@ -86,196 +104,399 @@ export default function FlightForm({
     },
   });
 
+  const [aircraftOpened, { open: openAircraft, close: closeAircraft }] =
+    useDisclosure(false);
+
+  const client = useApi();
+  const queryClient = useQueryClient();
+
+  const addAircraft = useMutation({
+    mutationFn: async (values: AircraftFormSchema) => {
+      const newAircraft = values;
+      if (newAircraft) {
+        const res = await client.post("/aircraft", newAircraft);
+        return res.data;
+      }
+      throw new Error("Aircraft creation failed");
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["aircraft-list"] });
+      close();
+    },
+  });
+
+  const [aircraft, setAircraft] = useState<string | null>(
+    initialValues?.aircraft ?? ""
+  );
+
+  const [hobbsTouched, setHobbsTouched] = useState(false);
+
+  const getHobbs = useQuery({
+    queryKey: ["hobbs", aircraft],
+    queryFn: async () =>
+      await client.get(`/aircraft/tail/${aircraft}`).then((res) => res.data),
+    enabled: !!aircraft && aircraft !== "",
+  });
+
+  const getAircraft = useAircraft();
+
+  useEffect(() => {
+    if (autofillHobbs && getHobbs.isFetched && getHobbs.data && !hobbsTouched) {
+      form.setFieldValue(
+        "hobbs_start",
+        getHobbs.data.hobbs ?? form.getTransformedValues()["hobbs_start"]
+      );
+    }
+  }, [getHobbs.data]);
+
   return (
-    <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
-      <ScrollArea.Autosize mah={mah}>
-        <Container>
-          {/* Date and Aircraft */}
+    <>
+      <Modal
+        opened={aircraftOpened}
+        onClose={closeAircraft}
+        title="New Aircraft"
+        centered
+      >
+        <AircraftForm
+          onSubmit={addAircraft.mutate}
+          isError={addAircraft.isError}
+          error={addAircraft.error}
+          isPending={addAircraft.isPending}
+          submitButtonLabel="Add"
+          withCancelButton
+          cancelFunc={closeAircraft}
+        />
+      </Modal>
+      <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
+        <ScrollArea.Autosize mah={mah}>
+          <Container>
+            {/* Date and Aircraft */}
 
-          <Fieldset>
-            <Group justify="center" grow>
-              <DatePickerInput label="Date" {...form.getInputProps("date")} />
-              <TextInput label="Aircraft" {...form.getInputProps("aircraft")} />
-            </Group>
-          </Fieldset>
+            <Fieldset>
+              <Group justify="center" grow>
+                <DatePickerInput
+                  label="Date"
+                  {...form.getInputProps("date")}
+                  withAsterisk
+                />
+                <Select
+                  label={
+                    <Group gap="0">
+                      <Text size="sm" fw={700} span>
+                        Aircraft
+                      </Text>
+                      <Text
+                        pl="0.3rem"
+                        style={{ color: "var(--mantine-color-error)" }}
+                        span
+                      >
+                        *
+                      </Text>
 
-          {/* Route */}
+                      <Tooltip label="Add Aircraft">
+                        <ActionIcon
+                          variant="transparent"
+                          onClick={openAircraft}
+                        >
+                          <IconPlus size="1rem" />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Group>
+                  }
+                  data={
+                    getAircraft.isFetched
+                      ? getAircraft.data?.map((item: AircraftSchema) => ({
+                          value: item.tail_no,
+                          label: item.tail_no,
+                        }))
+                      : initialValues
+                      ? [
+                          {
+                            value: initialValues?.aircraft,
+                            label: initialValues?.aircraft,
+                          },
+                        ]
+                      : null
+                  }
+                  value={aircraft}
+                  {...form.getInputProps("aircraft")}
+                  onChange={(_value, option) => {
+                    form.setFieldValue("aircraft", option.label);
+                    setAircraft(option.label);
+                    queryClient.invalidateQueries({
+                      queryKey: ["hobbs", aircraft],
+                    });
+                  }}
+                />
+              </Group>
+            </Fieldset>
 
-          <Fieldset legend="Route" mt="lg">
-            <Group justify="center" grow>
+            {/* Route */}
+
+            <Fieldset legend="Route" mt="lg">
+              <Group justify="center" grow>
+                <TextInput
+                  label="Waypoint From"
+                  {...form.getInputProps("waypoint_from")}
+                />
+                <TextInput
+                  label="Waypoint To"
+                  {...form.getInputProps("waypoint_to")}
+                />
+              </Group>
               <TextInput
-                label="Waypoint From"
-                {...form.getInputProps("waypoint_from")}
+                label="Route"
+                {...form.getInputProps("route")}
+                mt="md"
               />
-              <TextInput
-                label="Waypoint To"
-                {...form.getInputProps("waypoint_to")}
+            </Fieldset>
+
+            {/* Times */}
+
+            <Fieldset legend="Times" mt="md">
+              <Group justify="center" grow>
+                <NumberInput
+                  label={
+                    <Group gap="0">
+                      <Text size="sm" fw={700} span>
+                        Hobbs Start
+                      </Text>
+
+                      <Tooltip
+                        label={
+                          getHobbs.isFetched &&
+                          getHobbs.data &&
+                          getHobbs.data.hobbs ===
+                            form.getTransformedValues()["hobbs_start"]
+                            ? "Using aircraft time"
+                            : "Use Aircraft Time"
+                        }
+                      >
+                        <ActionIcon
+                          variant="transparent"
+                          disabled={
+                            !(
+                              getHobbs.isFetched &&
+                              getHobbs.data &&
+                              getHobbs.data.hobbs !==
+                                form.getTransformedValues()["hobbs_start"]
+                            )
+                          }
+                          style={
+                            !(
+                              getHobbs.isFetched &&
+                              getHobbs.data &&
+                              getHobbs.data.hobbs !==
+                                form.getTransformedValues()["hobbs_start"]
+                            )
+                              ? { backgroundColor: "transparent" }
+                              : {}
+                          }
+                          onClick={() =>
+                            form.setFieldValue(
+                              "hobbs_start",
+                              getHobbs.data?.hobbs ?? 0.0
+                            )
+                          }
+                        >
+                          <IconPlaneTilt size="1rem" />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Group>
+                  }
+                  decimalScale={1}
+                  step={0.1}
+                  min={0}
+                  fixedDecimalScale
+                  leftSection={
+                    <CloseButton
+                      aria-label="Clear input"
+                      onClick={() => form.setFieldValue("hobbs_start", "")}
+                      style={{
+                        display:
+                          ["", null].indexOf(
+                            form.getTransformedValues()["hobbs_start"]
+                          ) > -1
+                            ? "none"
+                            : undefined,
+                      }}
+                    />
+                  }
+                  {...form.getInputProps("hobbs_start")}
+                  onChange={(e) => {
+                    form.setFieldValue("hobbs_start", e);
+                    setHobbsTouched(true);
+                  }}
+                />
+                <HourInput form={form} field="hobbs_end" label="Hobbs End" />
+              </Group>
+            </Fieldset>
+
+            {/* Start/Stop */}
+
+            <Fieldset legend="Start/Stop" mt="md">
+              <Group justify="center" grow>
+                <TimeInput form={form} field="time_start" label="Start Time" />
+                <TimeInput form={form} field="time_off" label="Time Off" />
+              </Group>
+              <Group justify="center" grow mt="md">
+                <TimeInput form={form} field="time_down" label="Time Down" />
+                <TimeInput form={form} field="time_stop" label="Stop Time" />
+              </Group>
+            </Fieldset>
+
+            {/* Hours */}
+
+            <Fieldset legend="Hours" mt="md">
+              <Group justify="center" grow>
+                <ZeroHourInput
+                  form={form}
+                  field="time_total"
+                  label="Time Total"
+                />
+                <ZeroHourInput form={form} field="time_pic" label="Time PIC" />
+                <ZeroHourInput form={form} field="time_sic" label="Time SIC" />
+              </Group>
+              <Group justify="center" grow mt="md">
+                <ZeroHourInput
+                  form={form}
+                  field="time_night"
+                  label="Time Night"
+                />
+                <ZeroHourInput
+                  form={form}
+                  field="time_solo"
+                  label="Time Solo"
+                />
+              </Group>
+            </Fieldset>
+
+            {/* Cross-Country */}
+
+            <Fieldset legend="Cross-Country" mt="md">
+              <Group justify="center" grow>
+                <ZeroHourInput form={form} field="time_xc" label="Hours" />
+                <NumberInput
+                  label="Distance"
+                  decimalScale={1}
+                  min={0}
+                  fixedDecimalScale
+                  leftSection={
+                    <CloseButton
+                      aria-label="Clear input"
+                      onClick={() => form.setFieldValue("dist_xc", 0)}
+                      style={{
+                        display:
+                          form.getTransformedValues().dist_xc == 0
+                            ? "none"
+                            : undefined,
+                      }}
+                    />
+                  }
+                  {...form.getInputProps("dist_xc")}
+                />
+              </Group>
+            </Fieldset>
+
+            {/* Landings */}
+
+            <Fieldset legend="Landings" mt="md">
+              <Group justify="center" grow>
+                <ZeroIntInput form={form} field="landings_day" label="Day" />
+                <ZeroIntInput
+                  form={form}
+                  field="landings_night"
+                  label="Night"
+                />
+              </Group>
+            </Fieldset>
+
+            {/* Instrument */}
+
+            <Fieldset legend="Instrument" mt="md">
+              <Group justify="center" grow>
+                <ZeroHourInput
+                  form={form}
+                  field="time_instrument"
+                  label="Time Instrument"
+                />
+                <ZeroHourInput
+                  form={form}
+                  field="time_sim_instrument"
+                  label="Time Sim Instrument"
+                />
+                <ZeroIntInput
+                  form={form}
+                  field="holds_instrument"
+                  label="Instrument Holds"
+                />
+              </Group>
+            </Fieldset>
+
+            {/* Instruction */}
+
+            <Fieldset legend="Instruction" mt="md">
+              <Group justify="center" grow>
+                <ZeroHourInput
+                  form={form}
+                  field="dual_given"
+                  label="Dual Given"
+                />
+                <ZeroHourInput
+                  form={form}
+                  field="dual_recvd"
+                  label="Dual Received"
+                />
+                <ZeroHourInput form={form} field="time_sim" label="Sim Time" />
+                <ZeroHourInput
+                  form={form}
+                  field="time_ground"
+                  label="Ground Time"
+                />
+              </Group>
+            </Fieldset>
+
+            {/* About the Flight */}
+
+            <Fieldset legend="About" mt="md">
+              <ListInput form={form} field="tags" label="Tags" />
+              <Group justify="center" grow mt="md">
+                <ListInput form={form} field="pax" label="Pax" />
+                <ListInput form={form} field="crew" label="Crew" />
+              </Group>
+              <Textarea
+                label="Comments"
+                mt="md"
+                autosize
+                minRows={4}
+                {...form.getInputProps("comments")}
               />
-            </Group>
-            <TextInput label="Route" {...form.getInputProps("route")} mt="md" />
-          </Fieldset>
+            </Fieldset>
+          </Container>
+        </ScrollArea.Autosize>
 
-          {/* Times */}
-
-          <Fieldset legend="Times" mt="md">
-            <Group justify="center" grow>
-              <HourInput form={form} field="hobbs_start" label="Hobbs Start" />
-              <HourInput form={form} field="hobbs_end" label="Hobbs End" />
-            </Group>
-          </Fieldset>
-
-          {/* Start/Stop */}
-
-          <Fieldset legend="Start/Stop" mt="md">
-            <Group justify="center" grow>
-              <TimeInput form={form} field="time_start" label="Start Time" />
-              <TimeInput form={form} field="time_off" label="Time Off" />
-            </Group>
-            <Group justify="center" grow mt="md">
-              <TimeInput form={form} field="time_down" label="Time Down" />
-              <TimeInput form={form} field="time_stop" label="Stop Time" />
-            </Group>
-          </Fieldset>
-
-          {/* Hours */}
-
-          <Fieldset legend="Hours" mt="md">
-            <Group justify="center" grow>
-              <ZeroHourInput
-                form={form}
-                field="time_total"
-                label="Time Total"
-              />
-              <ZeroHourInput form={form} field="time_pic" label="Time PIC" />
-              <ZeroHourInput form={form} field="time_sic" label="Time SIC" />
-            </Group>
-            <Group justify="center" grow mt="md">
-              <ZeroHourInput
-                form={form}
-                field="time_night"
-                label="Time Night"
-              />
-              <ZeroHourInput form={form} field="time_solo" label="Time Solo" />
-            </Group>
-          </Fieldset>
-
-          {/* Cross-Country */}
-
-          <Fieldset legend="Cross-Country" mt="md">
-            <Group justify="center" grow>
-              <ZeroHourInput form={form} field="time_xc" label="Hours" />
-              <NumberInput
-                label="Distance"
-                decimalScale={1}
-                min={0}
-                fixedDecimalScale
-                leftSection={
-                  <CloseButton
-                    aria-label="Clear input"
-                    onClick={() => form.setFieldValue("dist_xc", 0)}
-                    style={{
-                      display:
-                        form.getTransformedValues().dist_xc == 0
-                          ? "none"
-                          : undefined,
-                    }}
-                  />
-                }
-                {...form.getInputProps("dist_xc")}
-              />
-            </Group>
-          </Fieldset>
-
-          {/* Landings */}
-
-          <Fieldset legend="Landings" mt="md">
-            <Group justify="center" grow>
-              <ZeroIntInput form={form} field="landings_day" label="Day" />
-              <ZeroIntInput form={form} field="landings_night" label="Night" />
-            </Group>
-          </Fieldset>
-
-          {/* Instrument */}
-
-          <Fieldset legend="Instrument" mt="md">
-            <Group justify="center" grow>
-              <ZeroHourInput
-                form={form}
-                field="time_instrument"
-                label="Time Instrument"
-              />
-              <ZeroHourInput
-                form={form}
-                field="time_sim_instrument"
-                label="Time Sim Instrument"
-              />
-              <ZeroIntInput
-                form={form}
-                field="holds_instrument"
-                label="Instrument Holds"
-              />
-            </Group>
-          </Fieldset>
-
-          {/* Instruction */}
-
-          <Fieldset legend="Instruction" mt="md">
-            <Group justify="center" grow>
-              <ZeroHourInput
-                form={form}
-                field="dual_given"
-                label="Dual Given"
-              />
-              <ZeroHourInput
-                form={form}
-                field="dual_recvd"
-                label="Dual Received"
-              />
-              <ZeroHourInput form={form} field="time_sim" label="Sim Time" />
-              <ZeroHourInput
-                form={form}
-                field="time_ground"
-                label="Ground Time"
-              />
-            </Group>
-          </Fieldset>
-
-          {/* About the Flight */}
-
-          <Fieldset legend="About" mt="md">
-            <ListInput form={form} field="tags" label="Tags" />
-            <Group justify="center" grow mt="md">
-              <ListInput form={form} field="pax" label="Pax" />
-              <ListInput form={form} field="crew" label="Crew" />
-            </Group>
-            <Textarea
-              label="Comments"
-              mt="md"
-              autosize
-              minRows={4}
-              {...form.getInputProps("comments")}
-            />
-          </Fieldset>
-        </Container>
-      </ScrollArea.Autosize>
-
-      <Group justify="flex-end" mt="md">
-        {isError ? (
-          <Text c="red" fw={700}>
-            {error instanceof AxiosError
-              ? error.response?.data.detail
-              : error?.message}
-          </Text>
-        ) : null}
-        {withCancelButton ? (
-          <Button onClick={cancelFunc} color="gray">
-            Cancel
+        <Group justify="flex-end" mt="md">
+          {isPending ? (
+            <Text c="yellow" fw={700}>
+              Loading...
+            </Text>
+          ) : isError ? (
+            <Text c="red" fw={700}>
+              {error instanceof AxiosError
+                ? error.response?.data.detail
+                : error?.message}
+            </Text>
+          ) : null}
+          {withCancelButton ? (
+            <Button onClick={cancelFunc} color="gray">
+              Cancel
+            </Button>
+          ) : null}
+          <Button type="submit" leftSection={<IconPencil />}>
+            {submitButtonLabel ?? "Create"}
           </Button>
-        ) : null}
-        <Button type="submit" leftSection={<IconPencil />}>
-          {submitButtonLabel ?? "Create"}
-        </Button>
-      </Group>
-    </form>
+        </Group>
+      </form>
+    </>
   );
 }

@@ -33,9 +33,11 @@ export default function NewFlight() {
 
         <FlightForm
           onSubmit={createFlight.mutate}
+          isPending={createFlight.isPending}
           isError={createFlight.isError}
           error={createFlight.error}
           mah="calc(100vh - 95px - 110px)"
+          autofillHobbs
         />
       </Stack>
     </Container>
