@@ -1,6 +1,6 @@
 import ErrorDisplay from "@/ui/error-display";
 import { useApi } from "@/util/api";
-import { useAircraft, useFlights } from "@/util/hooks";
+import { useAircraft } from "@/util/hooks";
 import { AircraftSchema, FlightConciseSchema } from "@/util/types";
 import {
   NavLink,
@@ -13,10 +13,9 @@ import {
   Badge,
   Group,
   Divider,
-  Modal,
   Select,
 } from "@mantine/core";
-import { randomId, useDisclosure } from "@mantine/hooks";
+import { randomId } from "@mantine/hooks";
 import { Link, useLocation, useNavigate } from "@remix-run/react";
 import {
   IconArrowRightTail,

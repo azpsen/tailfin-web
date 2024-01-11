@@ -69,7 +69,7 @@ function AircraftCard({ aircraft }: { aircraft: AircraftSchema }) {
           </Group>
         </Stack>
       </Modal>
-      <Card key={randomId()}>
+      <Card key={randomId()} withBorder shadow="sm">
         <Stack>
           <Group grow justify="space-between">
             <Title order={4}>{aircraft.tail_no}</Title>
