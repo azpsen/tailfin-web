@@ -2,7 +2,15 @@ import CollapsibleFieldset from "@/ui/display/collapsible-fieldset";
 import { VerticalLogItem } from "@/ui/display/log-item";
 import ErrorDisplay from "@/ui/error-display";
 import { useApi } from "@/util/api";
-import { Center, Group, Loader, Container, Stack, Title } from "@mantine/core";
+import {
+  Center,
+  Text,
+  Group,
+  Loader,
+  Container,
+  Stack,
+  Title,
+} from "@mantine/core";
 import { randomId } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -69,19 +77,6 @@ export default function Dashboard() {
               />
             </Group>
           </CollapsibleFieldset>
-          <CollapsibleFieldset legend="By Class" w="100%">
-            <Group grow>
-              {totalsData?.by_class?.map((total: object[]) => (
-                <>
-                  <VerticalLogItem
-                    key={randomId()}
-                    label={total.aircraft_class}
-                    content={total.time_total ?? 0.0}
-                  />
-                </>
-              ))}
-            </Group>
-          </CollapsibleFieldset>
           <CollapsibleFieldset legend="Landings" w="100%">
             <Group grow>
               <VerticalLogItem
@@ -128,6 +123,28 @@ export default function Dashboard() {
                 label="Night PIC"
                 content={totalsData?.totals?.night_pic ?? 0.0}
               />
+            </Group>
+          </CollapsibleFieldset>
+          <CollapsibleFieldset legend="By Category / Class" w="100%">
+            <Group justify="center" grow>
+              {totalsData?.by_class?.map((category) => (
+                <Stack key={randomId()} gap="0">
+                  <Text pb="xs" style={{ textAlign: "center" }}>
+                    {category.aircraft_category}
+                  </Text>
+                  <Group justify="center" grow>
+                    {category.classes.map((total) => (
+                      <>
+                        <VerticalLogItem
+                          key={randomId()}
+                          label={total.aircraft_class}
+                          content={total.time_total ?? 0.0}
+                        />
+                      </>
+                    ))}
+                  </Group>
+                </Stack>
+              ))}
             </Group>
           </CollapsibleFieldset>
         </Stack>
