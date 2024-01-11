@@ -41,6 +41,19 @@ function AircraftCard({ aircraft }: { aircraft: AircraftSchema }) {
     },
   });
 
+  const [editOpened, { open: openEdit, close: closeEdit }] =
+    useDisclosure(false);
+
+  const updateAircraft = useMutation({
+    mutationFn: async (values: AircraftFormSchema) =>
+      await client
+        .put(`/aircraft/${aircraft.id}`, values)
+        .then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["aircraft-list"] });
+    },
+  });
+
   return (
     <>
       <Modal
@@ -69,12 +82,31 @@ function AircraftCard({ aircraft }: { aircraft: AircraftSchema }) {
           </Group>
         </Stack>
       </Modal>
+      <Modal
+        opened={editOpened}
+        onClose={closeEdit}
+        title="Edit Aircraft"
+        centered
+      >
+        <AircraftForm
+          isError={updateAircraft.isError}
+          error={updateAircraft.error}
+          isPending={updateAircraft.isPending}
+          onSubmit={(values: AircraftFormSchema) =>
+            updateAircraft.mutate(values)
+          }
+          initialValues={aircraft}
+          submitButtonLabel="Update"
+          withCancelButton
+          cancelFunc={closeEdit}
+        />
+      </Modal>
       <Card key={randomId()} withBorder shadow="sm">
         <Stack>
           <Group grow justify="space-between">
             <Title order={4}>{aircraft.tail_no}</Title>
             <Group justify="flex-end">
-              <ActionIcon variant="transparent">
+              <ActionIcon variant="transparent" onClick={openEdit}>
                 <IconPencil />
               </ActionIcon>
               <ActionIcon

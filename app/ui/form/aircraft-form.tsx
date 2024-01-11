@@ -72,8 +72,12 @@ export default function AircraftForm({
       await client.get(`/aircraft/categories`).then((res) => res.data),
   });
 
-  const [category, setCategory] = useState("");
-  const [classSelection, setClassSelection] = useState("");
+  const [category, setCategory] = useState(
+    initialValues?.aircraft_category ?? ""
+  );
+  const [classSelection, setClassSelection] = useState<string | null>(
+    initialValues?.aircraft_class ?? ""
+  );
 
   const classes = useQuery({
     queryKey: ["classes", category],
@@ -107,7 +111,6 @@ export default function AircraftForm({
             {...newForm.getInputProps("aircraft_category")}
             label="Category"
             placeholder="Pick a value"
-            name="aircraft_category"
             withAsterisk
             data={
               categories.isFetched && !categories.isError
@@ -115,15 +118,18 @@ export default function AircraftForm({
                 : []
             }
             onChange={(_value, option) => {
+              newForm.setFieldValue("aircraft_category", option.value);
               setCategory(option.value);
-              setClassSelection("");
+              newForm.setFieldValue("aircraft_class", "");
+              setClassSelection(null);
               queryClient.invalidateQueries({
                 queryKey: ["classes", option.value],
               });
-              newForm.setFieldValue("aircraft_category", option.value);
             }}
+            key={classSelection}
           />
           <Select
+            {...newForm.getInputProps("aircraft_class")}
             label="Class"
             placeholder="Pick a value"
             withAsterisk
@@ -133,7 +139,10 @@ export default function AircraftForm({
                 : []
             }
             value={classSelection}
-            {...newForm.getInputProps("aircraft_class")}
+            onChange={(_value, option) => {
+              newForm.setFieldValue("aircraft_class", option.label);
+              setClassSelection(option.label);
+            }}
           />
           <NumberInput
             label="Hobbs"
@@ -147,11 +156,15 @@ export default function AircraftForm({
             {isError ? (
               <Text c="red">
                 {error instanceof AxiosError
-                  ? error?.response?.data?.detail ?? "Error adding aircraft"
+                  ? error?.response?.data?.detail ??
+                    error?.response?.data ??
+                    error?.response ??
+                    error?.message ??
+                    "Failed to submit"
                   : error?.message}
               </Text>
             ) : isPending ? (
-              <Text c="yellow">Adding aircraft...</Text>
+              <Text c="yellow">Loading...</Text>
             ) : null}
             {withCancelButton ? (
               <Button leftSection={<IconX />} color="gray" onClick={cancelFunc}>
