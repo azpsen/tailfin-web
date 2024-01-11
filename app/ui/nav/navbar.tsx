@@ -2,6 +2,7 @@ import { useAuth } from "@/util/auth";
 import { Stack, NavLink } from "@mantine/core";
 import { Link, useLocation } from "@remix-run/react";
 import {
+  IconAdjustments,
   IconBook2,
   IconDashboard,
   IconLogout,
@@ -19,7 +20,7 @@ export default function Navbar({
   const location = useLocation();
   const page = location.pathname.split("/")[2];
 
-  const { user, signout } = useAuth();
+  const { user, authLevel, signout } = useAuth();
 
   return (
     <Stack justify="space-between" h="100%">
@@ -51,6 +52,19 @@ export default function Navbar({
           active={page === "aircraft"}
           onClick={() => (opened ? toggle() : null)}
         />
+        {authLevel ? (
+          authLevel === 2 ? (
+            <NavLink
+              p="md"
+              component={Link}
+              to="/logbook/admin"
+              label="Admin"
+              leftSection={<IconAdjustments />}
+              active={page === "admin"}
+              onClick={() => (opened ? toggle() : null)}
+            />
+          ) : null
+        ) : null}
       </Stack>
       <Stack gap="0">
         <NavLink

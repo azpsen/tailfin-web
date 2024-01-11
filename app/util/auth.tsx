@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextValues {
   user: string | null;
+  authLevel: number | null;
   loading: boolean;
   signin: ({
     username,
@@ -34,6 +35,7 @@ export function useAuth(): AuthContextValues {
 
 function useProvideAuth() {
   const [user, setUser] = useState<string | null>(null);
+  const [authLevel, setAuthLevel] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
@@ -83,7 +85,10 @@ function useProvideAuth() {
     setLoading(false);
     await client
       .get("/users/me")
-      .then((response) => handleUser(response.data.username))
+      .then((response) => {
+        handleUser(response.data.username);
+        setAuthLevel(response.data.level);
+      })
       .catch(() => handleUser(null));
     navigate("/logbook");
   };
@@ -99,13 +104,17 @@ function useProvideAuth() {
   useEffect(() => {
     client
       .get("/users/me")
-      .then((response) => handleUser(response.data.username))
+      .then((response) => {
+        handleUser(response.data.username);
+        setAuthLevel(response.data.level);
+      })
       .catch(() => handleUser(null));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
     user,
+    authLevel,
     loading,
     signin,
     signout,
