@@ -51,7 +51,8 @@ type FlightFormSchema = FlightBaseSchema & {
   time_down: number | null;
   time_stop: number | null;
 
-  images: File[];
+  existing_images?: string[] | null;
+  images: File[] | string[];
 };
 
 type FlightCreateSchema = FlightBaseSchema & {
@@ -136,7 +137,7 @@ const flightCreateHelper = (
 };
 
 const flightEditHelper = (
-  values: FlightCreateSchema
+  values: FlightDisplaySchema
 ): FlightFormSchema | void => {
   try {
     const flight = {
@@ -154,6 +155,8 @@ const flightEditHelper = (
       time_stop: Number(
         `${dayjs(values.time_stop).hour()}${dayjs(values.time_stop).minute()}`
       ),
+      existing_images: values.images as string[],
+      images: [],
     };
     return flight;
   } catch (err) {

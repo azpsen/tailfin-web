@@ -29,7 +29,42 @@ export default function EditFlight() {
     mutationFn: async (values: FlightFormSchema) => {
       const newFlight = flightCreateHelper(values);
       if (newFlight) {
-        const res = await client.put(`/flights/${params.id}`, newFlight);
+        const existing_img = values.existing_images ?? [];
+        const missing = flight.data.images.filter(
+          (item: string) => existing_img?.indexOf(item) < 0
+        );
+
+        for (const img of missing) {
+          await client.delete(`/img/${img}`);
+        }
+
+        const res = await client.put(`/flights/${params.id}`, {
+          ...newFlight,
+          images: values.existing_images,
+        });
+
+        // Upload images
+        if (values.images.length > 0) {
+          const imageForm = new FormData();
+
+          for (const img of values.images ?? []) {
+            imageForm.append("images", img);
+          }
+
+          console.log(imageForm);
+
+          const img_id = await client.post(
+            `/flights/${params.id}/add_images`,
+            imageForm,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+
+          if (!img_id) {
+            await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
+            throw new Error("Image upload failed");
+          }
+        }
+
         return res.data;
       }
       throw new Error("Flight updating failed");

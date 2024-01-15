@@ -1,6 +1,7 @@
 import {
   AircraftFormSchema,
   AircraftSchema,
+  FlightDisplaySchema,
   FlightFormSchema,
 } from "@/util/types";
 import {
@@ -109,6 +110,7 @@ export default function FlightForm({
 
       comments: "",
 
+      existing_images: [],
       images: [],
     },
     validate: {
@@ -120,6 +122,8 @@ export default function FlightForm({
       time_stop: (value) => validate_time(value),
     },
   });
+  console.log(initialValues);
+  console.log(form.getTransformedValues());
 
   const [aircraftOpened, { open: openAircraft, close: closeAircraft }] =
     useDisclosure(false);
@@ -509,6 +513,15 @@ export default function FlightForm({
                 minRows={4}
                 {...form.getInputProps("comments")}
               />
+              {initialValues?.existing_images?.length ?? 0 > 0 ? (
+                <ListInput
+                  form={form}
+                  field="existing_images"
+                  mt="md"
+                  label="Existing Images"
+                  canAdd={false}
+                />
+              ) : null}
               <ImageUpload
                 form={form}
                 mt="md"

@@ -26,6 +26,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import classes from "./route.module.css";
+import { AircraftLogItem } from "@/ui/display/editable/aircraft-log-item";
+import { DateLogItem } from "@/ui/display/editable/date-log-item";
+import { HourLogItem } from "@/ui/display/editable/hour-log-item";
+import { IntLogItem } from "@/ui/display/editable/int-log-item";
+import { ListLogItem } from "@/ui/display/editable/list-log-item";
+import { TimeLogItem } from "@/ui/display/editable/time-log-item";
+import { TextLogItem } from "@/ui/display/editable/text-log-item";
 
 export default function Flight() {
   const params = useParams();
@@ -155,43 +162,55 @@ export default function Flight() {
                     ) : null}
                     <CollapsibleFieldset legend="About" mt="sm" w="100%">
                       <Group grow>
-                        <VerticalLogItem label="Date" content={log.date} date />
-                        <VerticalLogItem
+                        <DateLogItem
+                          label="Date"
+                          content={log.date}
+                          id={params.id}
+                          field="date"
+                        />
+                        <AircraftLogItem
                           label="Aircraft"
                           content={log.aircraft}
+                          id={params.id}
+                          field="aircraft"
                         />
                       </Group>
                       {(log.pax || log.crew) &&
                       (log.pax.length > 0 || log.crew.length > 0) ? (
                         <Group grow mt="sm">
-                          <VerticalLogItem
+                          <ListLogItem
                             label="Pax"
                             content={log.pax}
-                            list
                             listColor="gray"
+                            id={params.id}
+                            field="pax"
                           />
-                          <VerticalLogItem
+                          <ListLogItem
                             label="Crew"
                             content={log.crew}
-                            list
                             listColor="gray"
+                            id={params.id}
+                            field="crew"
                           />
                         </Group>
                       ) : null}
                       {log.tags && log.tags.length > 0 ? (
                         <Group grow mt="sm">
-                          <VerticalLogItem
+                          <ListLogItem
                             label="Tags"
                             content={log.tags}
-                            list
+                            id={params.id}
+                            field="tags"
                           />
                         </Group>
                       ) : null}
                       {log.comments?.length > 0 ? (
                         <Group grow mt="sm">
-                          <VerticalLogItem
+                          <TextLogItem
                             label="Comments"
                             content={log.comments}
+                            id={params.id}
+                            field="comments"
                           />
                         </Group>
                       ) : null}
@@ -223,15 +242,17 @@ export default function Flight() {
                     {log.hobbs_start || log.hobbs_end ? (
                       <CollapsibleFieldset legend="Times" w="100%" mt="sm">
                         <Group grow>
-                          <VerticalLogItem
+                          <HourLogItem
                             label="Hobbs Start"
                             content={log.hobbs_start}
-                            hours
+                            id={params.id}
+                            field="hobbs_start"
                           />
-                          <VerticalLogItem
+                          <HourLogItem
                             label="Hobbs End"
                             content={log.hobbs_end}
-                            hours
+                            id={params.id}
+                            field="hobbs_end"
                           />
                         </Group>
                       </CollapsibleFieldset>
@@ -243,29 +264,37 @@ export default function Flight() {
                       <CollapsibleFieldset legend="Start/Stop" w="100%" mt="sm">
                         {log.time_start || log.time_off ? (
                           <Group grow>
-                            <VerticalLogItem
+                            <TimeLogItem
                               label="Time Start"
                               content={log.time_start}
-                              time
+                              date={log.date}
+                              id={params.id}
+                              field="time_start"
                             />
-                            <VerticalLogItem
+                            <TimeLogItem
                               label="Time Off"
                               content={log.time_off}
-                              time
+                              date={log.date}
+                              id={params.id}
+                              field="time_off"
                             />
                           </Group>
                         ) : null}
                         {log.time_down || log.time_stop ? (
                           <Group grow mt="sm">
-                            <VerticalLogItem
+                            <TimeLogItem
                               label="Time Down"
                               content={log.time_down}
-                              time
+                              date={log.date}
+                              id={params.id}
+                              field="time_down"
                             />
-                            <VerticalLogItem
+                            <TimeLogItem
                               label="Time Stop"
                               content={log.time_stop}
-                              time
+                              date={log.date}
+                              id={params.id}
+                              field="time_stop"
                             />
                           </Group>
                         ) : null}
@@ -273,32 +302,37 @@ export default function Flight() {
                     ) : null}
                     <CollapsibleFieldset legend="Hours" w="100%" mt="sm">
                       <Group grow>
-                        <VerticalLogItem
+                        <HourLogItem
                           label="Total"
                           content={log.time_total}
-                          hours
+                          id={params.id}
+                          field="time_total"
                         />
-                        <VerticalLogItem
+                        <HourLogItem
                           label="Solo"
                           content={log.time_solo}
-                          hours
+                          id={params.id}
+                          field="time_solo"
                         />
-                        <VerticalLogItem
+                        <HourLogItem
                           label="Night"
                           content={log.time_night}
-                          hours
+                          id={params.id}
+                          field="time_night"
                         />
                       </Group>
                       <Group grow mt="sm">
-                        <VerticalLogItem
+                        <HourLogItem
                           label="PIC"
                           content={log.time_pic}
-                          hours
+                          id={params.id}
+                          field="time_pic"
                         />
-                        <VerticalLogItem
+                        <HourLogItem
                           label="SIC"
                           content={log.time_sic}
-                          hours
+                          id={params.id}
+                          field="time_sic"
                         />
                       </Group>
                     </CollapsibleFieldset>
@@ -309,10 +343,11 @@ export default function Flight() {
                         mt="sm"
                       >
                         <Group grow>
-                          <VerticalLogItem
+                          <HourLogItem
                             label="Hours"
                             content={log.time_xc}
-                            hours
+                            id={params.id}
+                            field="time_xc"
                           />
                           <VerticalLogItem
                             label="Distance"
@@ -324,13 +359,17 @@ export default function Flight() {
                     ) : null}
                     <CollapsibleFieldset legend="Landings" w="100%">
                       <Group grow>
-                        <VerticalLogItem
+                        <IntLogItem
                           label="Day"
                           content={log.landings_day}
+                          id={params.id}
+                          field="landings_day"
                         />
-                        <VerticalLogItem
+                        <IntLogItem
                           label="Night"
                           content={log.landings_night}
+                          id={params.id}
+                          field="landings_night"
                         />
                       </Group>
                     </CollapsibleFieldset>
@@ -339,19 +378,22 @@ export default function Flight() {
                     log.holds_instrument ? (
                       <CollapsibleFieldset legend="Instrument" mt="sm" w="100%">
                         <Group grow>
-                          <VerticalLogItem
+                          <HourLogItem
                             label="Instrument Time"
                             content={log.time_instrument}
-                            hours
+                            id={params.id}
+                            field="time_instrument"
                           />
-                          <VerticalLogItem
+                          <HourLogItem
                             label="Simulated Instrument Time"
                             content={log.time_sim_instrument}
-                            hours
+                            id={params.id}
                           />
-                          <VerticalLogItem
+                          <IntLogItem
                             label="Instrument Holds"
                             content={log.holds_instrument}
+                            id={params.id}
+                            field="holds_instrument"
                           />
                         </Group>
                       </CollapsibleFieldset>

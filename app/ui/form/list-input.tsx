@@ -7,6 +7,8 @@ export default function ListInput({
   form,
   field,
   label,
+  mt = "",
+  canAdd = true,
 }: {
   form: UseFormReturnType<
     FlightFormSchema,
@@ -14,6 +16,8 @@ export default function ListInput({
   >;
   field: string;
   label: string;
+  mt?: string;
+  canAdd?: boolean;
 }) {
   const field_key = field as keyof typeof form.getTransformedValues;
   const [inputValue, setInputValue] = useState<string>("");
@@ -37,7 +41,11 @@ export default function ListInput({
   };
 
   return (
-    <PillsInput label={label} description="Press enter or comma to add item">
+    <PillsInput
+      mt={mt}
+      label={label}
+      description="Press enter or comma to add item"
+    >
       <Pill.Group>
         {(form.getTransformedValues()[field_key] as string[]).map(
           (item: string) => (
@@ -58,11 +66,13 @@ export default function ListInput({
             </Pill>
           )
         )}
-        <PillsInput.Field
-          value={inputValue}
-          onChange={(event) => setInputValue(event.currentTarget.value)}
-          onKeyDown={handleKeyDown}
-        />
+        {canAdd ? (
+          <PillsInput.Field
+            value={inputValue}
+            onChange={(event) => setInputValue(event.currentTarget.value)}
+            onKeyDown={handleKeyDown}
+          />
+        ) : null}
       </Pill.Group>
     </PillsInput>
   );
