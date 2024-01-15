@@ -25,6 +25,8 @@ import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
+import classes from "./route.module.css";
+
 export default function Flight() {
   const params = useParams();
 
@@ -136,6 +138,7 @@ export default function Flight() {
                           withIndicators
                           slideGap="sm"
                           slideSize={{ base: "100%", sm: "80%" }}
+                          classNames={classes}
                         >
                           {imageIds.map((img) => (
                             <Carousel.Slide key={randomId()}>
