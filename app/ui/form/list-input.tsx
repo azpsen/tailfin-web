@@ -44,7 +44,7 @@ export default function ListInput({
     <PillsInput
       mt={mt}
       label={label}
-      description="Press enter or comma to add item"
+      description={canAdd ? "Press enter or comma to add item" : ""}
     >
       <Pill.Group>
         {(form.getTransformedValues()[field_key] as string[]).map(

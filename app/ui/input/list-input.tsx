@@ -31,7 +31,10 @@ export default function ListInput({
   };
 
   return (
-    <PillsInput label={label} description="Press enter or comma to add item">
+    <PillsInput
+      label={label}
+      description={canAdd ? "Press enter or comma to add item" : ""}
+    >
       <Pill.Group>
         {value.map((item: string) => (
           <Pill
