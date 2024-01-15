@@ -60,6 +60,11 @@ export default function FlightForm({
   cancelFunc?: () => void;
   autofillHobbs?: boolean;
 }) {
+  const validate_time = (value) => {
+    if (value > 2359) return "Time must be between 0000 and 2359";
+    if (value % 100 > 59) return "Minutes must not exceed 59";
+  };
+
   const form = useForm<FlightFormSchema>({
     initialValues: initialValues ?? {
       date: dayjs(),
@@ -105,6 +110,14 @@ export default function FlightForm({
       comments: "",
 
       images: [],
+    },
+    validate: {
+      aircraft: (value) =>
+        value?.length ?? 0 > 0 ? null : "Please select an aircraft",
+      time_start: (value) => validate_time(value),
+      time_off: (value) => validate_time(value),
+      time_down: (value) => validate_time(value),
+      time_stop: (value) => validate_time(value),
     },
   });
 
@@ -498,6 +511,7 @@ export default function FlightForm({
               />
               <ImageUpload
                 form={form}
+                mt="md"
                 field="images"
                 label="Images"
                 placeholder="Upload Images"

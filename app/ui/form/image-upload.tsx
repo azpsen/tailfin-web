@@ -9,6 +9,7 @@ export default function ImageUpload({
   field,
   label = "",
   placeholder = "",
+  mt = "",
 }: {
   form: UseFormReturnType<
     FlightFormSchema,
@@ -17,6 +18,7 @@ export default function ImageUpload({
   field: string;
   label?: string;
   placeholder?: string;
+  mt?: string;
 }) {
   const ValueComponent: FileInputProps["valueComponent"] = ({ value }) => {
     if (value === null) {
@@ -41,6 +43,7 @@ export default function ImageUpload({
       label={label}
       placeholder={placeholder}
       multiple
+      mt={mt}
       accept="image/*"
       valueComponent={ValueComponent}
       rightSectionPointerEvents="none"
