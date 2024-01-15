@@ -1,5 +1,6 @@
 import CollapsibleFieldset from "@/ui/display/collapsible-fieldset";
 import { VerticalLogItem } from "@/ui/display/log-item";
+import SecureImage from "@/ui/display/secure-img";
 import ErrorDisplay from "@/ui/error-display";
 import { useApi } from "@/util/api";
 import {
@@ -17,10 +18,12 @@ import {
   Modal,
   Button,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Carousel } from "@mantine/carousel";
+import { randomId, useDisclosure } from "@mantine/hooks";
 import { useNavigate, useParams } from "@remix-run/react";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 export default function Flight() {
   const params = useParams();
@@ -33,6 +36,14 @@ export default function Flight() {
     queryFn: async () =>
       await client.get(`/flights/${params.id}`).then((res) => res.data),
   });
+
+  const [imageIds, setImageIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (flight.data) {
+      setImageIds(flight.data.images ?? []);
+    }
+  }, [flight.data]);
 
   const [deleteOpened, { open: openDelete, close: closeDelete }] =
     useDisclosure(false);
@@ -117,6 +128,25 @@ export default function Flight() {
               <ScrollArea h="calc(100vh - 95px - 110px)" m="0" p="0">
                 <Container h="100%">
                   <Grid justify="center">
+                    {imageIds.length > 0 ? (
+                      <CollapsibleFieldset legend="Images" mt="sm" w="100%">
+                        <Carousel
+                          withIndicators
+                          slideGap="sm"
+                          slideSize={{ base: "100%", sm: "80%" }}
+                        >
+                          {imageIds.map((img) => (
+                            <Carousel.Slide key={randomId()}>
+                              <SecureImage
+                                key={randomId()}
+                                id={img}
+                                radius="lg"
+                              />
+                            </Carousel.Slide>
+                          ))}
+                        </Carousel>
+                      </CollapsibleFieldset>
+                    ) : null}
                     <CollapsibleFieldset legend="About" mt="sm" w="100%">
                       <Group grow>
                         <VerticalLogItem label="Date" content={log.date} date />

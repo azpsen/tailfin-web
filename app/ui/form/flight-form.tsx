@@ -337,12 +337,32 @@ export default function FlightForm({
 
             <Fieldset legend="Start/Stop" mt="md">
               <Group justify="center" grow>
-                <TimeInput form={form} field="time_start" label="Start Time" />
-                <TimeInput form={form} field="time_off" label="Time Off" />
+                <TimeInput
+                  form={form}
+                  field="time_start"
+                  label="Start Time"
+                  allowLeadingZeros
+                />
+                <TimeInput
+                  form={form}
+                  field="time_off"
+                  label="Time Off"
+                  allowLeadingZeros
+                />
               </Group>
               <Group justify="center" grow mt="md">
-                <TimeInput form={form} field="time_down" label="Time Down" />
-                <TimeInput form={form} field="time_stop" label="Stop Time" />
+                <TimeInput
+                  form={form}
+                  field="time_down"
+                  label="Time Down"
+                  allowLeadingZeros
+                />
+                <TimeInput
+                  form={form}
+                  field="time_stop"
+                  label="Stop Time"
+                  allowLeadingZeros
+                />
               </Group>
             </Fieldset>
 

@@ -8,10 +8,12 @@ export default function TimeInput({
   form,
   label,
   field,
+  allowLeadingZeros = false,
 }: {
   form: UseFormReturnType<FlightFormSchema>;
   field: string;
   label: string;
+  allowLeadingZeros?: boolean;
 }) {
   const field_key = field as keyof typeof form.getTransformedValues;
 
@@ -21,6 +23,7 @@ export default function TimeInput({
       allowDecimal={false}
       min={0}
       max={2359}
+      allowLeadingZeros={allowLeadingZeros}
       leftSection={
         <CloseButton
           aria-label="Clear input"
