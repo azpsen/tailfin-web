@@ -67,6 +67,7 @@ Once running, the web app can be accessed at `localhost:3000`
 ## Roadmap <a name="roadmap"></a>
 
 - [x] Create, view, edit, and delete flight logs
+- [x] Aircraft managment and association with flight logs
 - [x] Dashboard with statistics
 - [x] Attach photos to log entries
 - [ ] GPS track recording and map display
