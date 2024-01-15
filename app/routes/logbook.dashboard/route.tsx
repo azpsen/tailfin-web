@@ -31,7 +31,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (totals.isFetched && !!totals.data) {
-      console.log(totals.data);
       setTotalsData(totals.data);
     }
   }, [totals.data]);

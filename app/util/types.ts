@@ -50,6 +50,8 @@ type FlightFormSchema = FlightBaseSchema & {
   time_off: number | null;
   time_down: number | null;
   time_stop: number | null;
+
+  images: File[];
 };
 
 type FlightCreateSchema = FlightBaseSchema & {

@@ -10,6 +10,7 @@ import {
   Container,
   Fieldset,
   Group,
+  Loader,
   Modal,
   NumberInput,
   ScrollArea,
@@ -34,6 +35,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/util/api";
 import { useAircraft } from "@/util/hooks";
 import { useEffect, useState } from "react";
+import ImageUpload from "./image-upload";
 
 export default function FlightForm({
   onSubmit,
@@ -101,6 +103,8 @@ export default function FlightForm({
       crew: [],
 
       comments: "",
+
+      images: [],
     },
   });
 
@@ -492,20 +496,22 @@ export default function FlightForm({
                 minRows={4}
                 {...form.getInputProps("comments")}
               />
+              <ImageUpload
+                form={form}
+                field="images"
+                label="Images"
+                placeholder="Upload Images"
+              />
             </Fieldset>
           </Container>
         </ScrollArea.Autosize>
 
         <Group justify="flex-end" mt="md">
           {isPending ? (
-            <Text c="yellow" fw={700}>
-              Loading...
-            </Text>
+            <Loader />
           ) : isError ? (
             <Text c="red" fw={700}>
-              {error instanceof AxiosError
-                ? error.response?.data.detail
-                : error?.message}
+              {error?.message}
             </Text>
           ) : null}
           {withCancelButton ? (

@@ -58,3 +58,7 @@ function useProvideApi(apiUrl: string) {
 
   return client;
 }
+
+export function createClient() {
+  return axios.create({});
+}

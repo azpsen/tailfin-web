@@ -16,6 +16,32 @@ export default function NewFlight() {
       const newFlight = flightCreateHelper(values);
       if (newFlight) {
         const res = await client.post("/flights", newFlight);
+
+        const id = res.data.id;
+        if (!id) throw new Error("Flight creation failed");
+
+        console.log(values.images);
+
+        const imageForm = new FormData();
+
+        // Upload images
+        for (const img of values.images) {
+          imageForm.append("images", img);
+        }
+
+        console.log(imageForm);
+
+        const img_id = await client.post(
+          `/flights/${id}/add_images`,
+          imageForm,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+
+        if (!img_id) {
+          await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
+          throw new Error("Image upload failed");
+        }
+
         return res.data;
       }
       throw new Error("Flight creation failed");

@@ -45,10 +45,12 @@ function useFetchImageAsBase64(
 export default function SecureImage({
   id,
   radius = "sm",
+  h = "",
   clickable = true,
 }: {
   id: string;
   radius?: string;
+  h?: string;
   clickable?: boolean;
 }) {
   const { isLoading, error, data } = useFetchImageAsBase64(id);
@@ -57,7 +59,7 @@ export default function SecureImage({
 
   if (isLoading)
     return (
-      <Center h="100%">
+      <Center h="500px">
         <Loader />
       </Center>
     );
@@ -80,6 +82,12 @@ export default function SecureImage({
       <Image
         src={`data:${data?.type};base64,${data?.blob}`}
         radius={radius}
+        w="auto"
+        maw="100%"
+        h="100%"
+        m="auto"
+        fit="contain"
+        style={{ maxHeight: h ?? "" }}
         onClick={() => {
           if (clickable) {
             open();

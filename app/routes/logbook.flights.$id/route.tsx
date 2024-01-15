@@ -77,6 +77,7 @@ export default function Flight() {
             </Text>
           ) : null}
           <Group justify="flex-end">
+            {deleteFlight.isPending ? <Loader /> : null}
             <Button color="red" onClick={() => deleteFlight.mutate()}>
               Delete
             </Button>
@@ -131,6 +132,7 @@ export default function Flight() {
                     {imageIds.length > 0 ? (
                       <CollapsibleFieldset legend="Images" mt="sm" w="100%">
                         <Carousel
+                          style={{ maxHeight: "700px" }}
                           withIndicators
                           slideGap="sm"
                           slideSize={{ base: "100%", sm: "80%" }}
@@ -140,6 +142,7 @@ export default function Flight() {
                               <SecureImage
                                 key={randomId()}
                                 id={img}
+                                h="700px"
                                 radius="lg"
                               />
                             </Carousel.Slide>
