@@ -32,10 +32,6 @@ export default function Me() {
       new_psk: string;
       confirm_new_psk: string;
     }) => {
-      console.log({
-        current_password: values.current_psk,
-        new_password: values.new_psk,
-      });
       await client.put(`/users/me/password`, {
         current_password: values.current_psk,
         new_password: values.new_psk,

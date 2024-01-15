@@ -59,8 +59,6 @@ export default function ImageLogItem({
           imageForm.append("images", img);
         }
 
-        console.log(imageForm);
-
         const img_id = await client.post(
           `/flights/${id}/add_images`,
           imageForm,

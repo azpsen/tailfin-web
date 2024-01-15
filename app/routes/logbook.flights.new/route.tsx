@@ -20,16 +20,12 @@ export default function NewFlight() {
         const id = res.data.id;
         if (!id) throw new Error("Flight creation failed");
 
-        console.log(values.images);
-
         const imageForm = new FormData();
 
         // Upload images
         for (const img of values.images) {
           imageForm.append("images", img);
         }
-
-        console.log(imageForm);
 
         const img_id = await client.post(
           `/flights/${id}/add_images`,

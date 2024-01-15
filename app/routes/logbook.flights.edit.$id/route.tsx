@@ -51,8 +51,6 @@ export default function EditFlight() {
             imageForm.append("images", img);
           }
 
-          console.log(imageForm);
-
           const img_id = await client.post(
             `/flights/${params.id}/add_images`,
             imageForm,

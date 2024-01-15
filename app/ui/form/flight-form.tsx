@@ -120,9 +120,6 @@ export default function FlightForm({
       time_stop: (value) => validate_time(value),
     },
   });
-  console.log(initialValues);
-  console.log(form.getTransformedValues());
-
   const [aircraftOpened, { open: openAircraft, close: closeAircraft }] =
     useDisclosure(false);
 
