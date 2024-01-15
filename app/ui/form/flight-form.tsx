@@ -1,7 +1,6 @@
 import {
   AircraftFormSchema,
   AircraftSchema,
-  FlightDisplaySchema,
   FlightFormSchema,
 } from "@/util/types";
 import {
@@ -29,7 +28,6 @@ import TimeInput from "./time-input";
 import { ZeroIntInput } from "./int-input";
 import ListInput from "./list-input";
 import { IconPencil, IconPlaneTilt, IconPlus } from "@tabler/icons-react";
-import { AxiosError } from "axios";
 import { useDisclosure } from "@mantine/hooks";
 import AircraftForm from "./aircraft-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

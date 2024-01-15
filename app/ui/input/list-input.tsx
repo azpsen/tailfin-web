@@ -5,10 +5,12 @@ export default function ListInput({
   label,
   value,
   setValue,
+  canAdd = true,
 }: {
   label: string;
   value: string[];
   setValue: Dispatch<SetStateAction<string[]>>;
+  canAdd?: boolean;
 }) {
   const [inputValue, setInputValue] = useState<string>("");
 
@@ -43,11 +45,13 @@ export default function ListInput({
             {item}
           </Pill>
         ))}
-        <PillsInput.Field
-          value={inputValue}
-          onChange={(event) => setInputValue(event.currentTarget.value)}
-          onKeyDown={handleKeyDown}
-        />
+        {canAdd ? (
+          <PillsInput.Field
+            value={inputValue}
+            onChange={(event) => setInputValue(event.currentTarget.value)}
+            onKeyDown={handleKeyDown}
+          />
+        ) : null}
       </Pill.Group>
     </PillsInput>
   );

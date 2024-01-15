@@ -25,7 +25,6 @@ import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-import classes from "./route.module.css";
 import { AircraftLogItem } from "@/ui/display/editable/aircraft-log-item";
 import { DateLogItem } from "@/ui/display/editable/date-log-item";
 import { HourLogItem } from "@/ui/display/editable/hour-log-item";
@@ -33,6 +32,7 @@ import { IntLogItem } from "@/ui/display/editable/int-log-item";
 import { ListLogItem } from "@/ui/display/editable/list-log-item";
 import { TimeLogItem } from "@/ui/display/editable/time-log-item";
 import { TextLogItem } from "@/ui/display/editable/text-log-item";
+import ImageLogItem from "@/ui/display/editable/img-log-item";
 
 export default function Flight() {
   const params = useParams();
@@ -140,24 +140,11 @@ export default function Flight() {
                   <Grid justify="center">
                     {imageIds.length > 0 ? (
                       <CollapsibleFieldset legend="Images" mt="sm" w="100%">
-                        <Carousel
-                          style={{ maxHeight: "700px" }}
-                          withIndicators
-                          slideGap="sm"
-                          slideSize={{ base: "100%", sm: "80%" }}
-                          classNames={classes}
-                        >
-                          {imageIds.map((img) => (
-                            <Carousel.Slide key={randomId()}>
-                              <SecureImage
-                                key={randomId()}
-                                id={img}
-                                h="700px"
-                                radius="lg"
-                              />
-                            </Carousel.Slide>
-                          ))}
-                        </Carousel>
+                        <ImageLogItem
+                          imageIds={imageIds}
+                          id={params.id}
+                          mah="700px"
+                        />
                       </CollapsibleFieldset>
                     ) : null}
                     <CollapsibleFieldset legend="About" mt="sm" w="100%">
