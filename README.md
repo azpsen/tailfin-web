@@ -68,9 +68,9 @@ Once running, the web app can be accessed at `localhost:3000`
 
 - [x] Create, view, edit, and delete flight logs
 - [x] Functionality for adding flights
-- [ ] Dashboard with statistics
+- [x] Dashboard with statistics
+- [x] Attach photos to log entries
+- [ ] GPS track recording and map display
 - [ ] Calendar view
-- [ ] Attach photos to log entries
 - [ ] Admin dashboard to manage all users and server configuration
 - [ ] Integrate database of airports and waypoints that can be queried to find nearest
-- [ ] GPS track recording and map display
