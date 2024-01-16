@@ -58,10 +58,10 @@ type FlightFormSchema = FlightBaseSchema & {
 type FlightCreateSchema = FlightBaseSchema & {
   date: string;
 
-  time_start: string;
-  time_off: string;
-  time_down: string;
-  time_stop: string;
+  time_start: string | null;
+  time_off: string | null;
+  time_down: string | null;
+  time_stop: string | null;
 };
 
 type FlightDisplaySchema = FlightBaseSchema & {
@@ -101,34 +101,42 @@ const flightCreateHelper = (
       date: date.utc().startOf("day").toISOString(),
       hobbs_start: values.hobbs_start ? Number(values.hobbs_start) : null,
       hobbs_end: values.hobbs_end ? Number(values.hobbs_end) : null,
-      time_start: date
-        .utc()
-        .hour(Math.floor((values.time_start ?? 0) / 100))
-        .minute(Math.floor((values.time_start ?? 0) % 100))
-        .second(0)
-        .millisecond(0)
-        .toISOString(),
-      time_off: date
-        .utc()
-        .hour(Math.floor((values.time_off ?? 0) / 100))
-        .minute(Math.floor((values.time_off ?? 0) % 100))
-        .second(0)
-        .millisecond(0)
-        .toISOString(),
-      time_down: date
-        .utc()
-        .hour(Math.floor((values.time_down ?? 0) / 100))
-        .minute(Math.floor((values.time_down ?? 0) % 100))
-        .second(0)
-        .millisecond(0)
-        .toISOString(),
-      time_stop: date
-        .utc()
-        .hour(Math.floor((values.time_stop ?? 0) / 100))
-        .minute(Math.floor((values.time_stop ?? 0) % 100))
-        .second(0)
-        .millisecond(0)
-        .toISOString(),
+      time_start: values.time_start
+        ? date
+            .utc()
+            .hour(Math.floor((values.time_start ?? 0) / 100))
+            .minute(Math.floor((values.time_start ?? 0) % 100))
+            .second(0)
+            .millisecond(0)
+            .toISOString()
+        : null,
+      time_off: values.time_off
+        ? date
+            .utc()
+            .hour(Math.floor((values.time_off ?? 0) / 100))
+            .minute(Math.floor((values.time_off ?? 0) % 100))
+            .second(0)
+            .millisecond(0)
+            .toISOString()
+        : null,
+      time_down: values.time_down
+        ? date
+            .utc()
+            .hour(Math.floor((values.time_down ?? 0) / 100))
+            .minute(Math.floor((values.time_down ?? 0) % 100))
+            .second(0)
+            .millisecond(0)
+            .toISOString()
+        : null,
+      time_stop: values.time_stop
+        ? date
+            .utc()
+            .hour(Math.floor((values.time_stop ?? 0) / 100))
+            .minute(Math.floor((values.time_stop ?? 0) % 100))
+            .second(0)
+            .millisecond(0)
+            .toISOString()
+        : null,
     };
     return newFlight;
   } catch (err) {

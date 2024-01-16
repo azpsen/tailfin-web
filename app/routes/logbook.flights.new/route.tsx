@@ -23,19 +23,21 @@ export default function NewFlight() {
         const imageForm = new FormData();
 
         // Upload images
-        for (const img of values.images) {
-          imageForm.append("images", img);
-        }
+        if (values.images.length > 0) {
+          for (const img of values.images) {
+            imageForm.append("images", img);
+          }
 
-        const img_id = await client.post(
-          `/flights/${id}/add_images`,
-          imageForm,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+          const img_id = await client.post(
+            `/flights/${id}/add_images`,
+            imageForm,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
 
-        if (!img_id) {
-          await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
-          throw new Error("Image upload failed");
+          if (!img_id) {
+            await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
+            throw new Error("Image upload failed");
+          }
         }
 
         return res.data;

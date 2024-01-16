@@ -35,6 +35,7 @@ import { useApi } from "@/util/api";
 import { useAircraft } from "@/util/hooks";
 import { useEffect, useState } from "react";
 import ImageUpload from "./image-upload";
+import ImageListInput from "./image-list-input";
 
 export default function FlightForm({
   onSubmit,
@@ -59,7 +60,8 @@ export default function FlightForm({
   cancelFunc?: () => void;
   autofillHobbs?: boolean;
 }) {
-  const validate_time = (value) => {
+  const validate_time = (value: number | null) => {
+    if (value === null) return;
     if (value > 2359) return "Time must be between 0000 and 2359";
     if (value % 100 > 59) return "Minutes must not exceed 59";
   };
@@ -163,6 +165,7 @@ export default function FlightForm({
         getHobbs.data.hobbs ?? form.getTransformedValues()["hobbs_start"]
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getHobbs.data]);
 
   return (
@@ -332,7 +335,9 @@ export default function FlightForm({
                       style={{
                         display:
                           ["", null].indexOf(
-                            form.getTransformedValues()["hobbs_start"]
+                            form.getTransformedValues()["hobbs_start"] as
+                              | string
+                              | null
                           ) > -1
                             ? "none"
                             : undefined,
@@ -509,12 +514,12 @@ export default function FlightForm({
                 {...form.getInputProps("comments")}
               />
               {initialValues?.existing_images?.length ?? 0 > 0 ? (
-                <ListInput
+                <ImageListInput
                   form={form}
                   field="existing_images"
                   mt="md"
                   label="Existing Images"
-                  canAdd={false}
+                  // canAdd={false}
                 />
               ) : null}
               <ImageUpload

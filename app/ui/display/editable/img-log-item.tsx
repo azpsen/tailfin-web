@@ -13,9 +13,9 @@ import {
   Text,
 } from "@mantine/core";
 import { IconPencil } from "@tabler/icons-react";
-import ListInput from "@/ui/input/list-input";
+import ImageListInput from "@/ui/input/image-list-input";
 import ImageUpload from "@/ui/input/image-upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApi } from "@/util/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -66,17 +66,22 @@ export default function ImageLogItem({
         );
 
         if (!img_id) {
+          await queryClient.invalidateQueries({ queryKey: [id] });
           await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
           throw new Error("Image upload failed");
         }
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [id] });
-      queryClient.invalidateQueries({ queryKey: ["flights-list"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [id] });
+      await queryClient.invalidateQueries({ queryKey: ["flights-list"] });
       closeEdit();
     },
   });
+
+  useEffect(() => {
+    setExistingImages(imageIds);
+  }, [imageIds]);
 
   return (
     <>
@@ -87,18 +92,19 @@ export default function ImageLogItem({
         centered
       >
         <Stack>
-          <ListInput
-            label="Existing Images"
-            value={existingImages}
-            setValue={setExistingImages}
-            canAdd={false}
-          />
           <ImageUpload
             value={newImages}
             setValue={setNewImages}
             label="Add Images"
             mt="md"
             placeholder="Images"
+          />
+          <ImageListInput
+            label="Existing Images"
+            imageIds={existingImages}
+            setImageIds={setExistingImages}
+            collapsible
+            startCollapsed
           />
 
           <Group justify="flex-end">

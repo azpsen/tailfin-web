@@ -1,6 +1,5 @@
 import CollapsibleFieldset from "@/ui/display/collapsible-fieldset";
 import { VerticalLogItem } from "@/ui/display/log-item";
-import SecureImage from "@/ui/display/secure-img";
 import ErrorDisplay from "@/ui/error-display";
 import { useApi } from "@/util/api";
 import {
@@ -18,8 +17,7 @@ import {
   Modal,
   Button,
 } from "@mantine/core";
-import { Carousel } from "@mantine/carousel";
-import { randomId, useDisclosure } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import { useNavigate, useParams } from "@remix-run/react";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -142,7 +140,7 @@ export default function Flight() {
                       <CollapsibleFieldset legend="Images" mt="sm" w="100%">
                         <ImageLogItem
                           imageIds={imageIds}
-                          id={params.id}
+                          id={params.id ?? ""}
                           mah="700px"
                         />
                       </CollapsibleFieldset>
