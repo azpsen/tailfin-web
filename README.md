@@ -3,11 +3,11 @@
     <img width=200px height=200px src="public/logo.png" alt="Tailfin Logo"></a>
 </p>
 
-<h3 align="center">Tailfin</h3>
+<h1 align="center">Tailfin</h2>
 
----
+<h3 align="center">A self-hosted digital flight logbook</h3>
 
-<p align="center">A self-hosted digital flight logbook</p>
+![Screenshots](public/mockup.png)
 
 ## Table of Contents
 
