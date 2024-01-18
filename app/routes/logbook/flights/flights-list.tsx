@@ -16,7 +16,7 @@ import {
   Select,
 } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
-import { Link, useLocation, useNavigate } from "@remix-run/react";
+import { Link, useLocation, useNavigate, useParams } from "@remix-run/react";
 import {
   IconArrowRightTail,
   IconPlaneTilt,
@@ -28,7 +28,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function FlightsListDisplay({
   flights,
@@ -55,6 +55,17 @@ function FlightsListDisplay({
     "November",
     "December",
   ];
+
+  const params = useParams();
+
+  useEffect(() => {
+    console.log(params);
+    if (params.id) {
+      const selectedFlight = document.getElementById(`${params.id} navlink`);
+      console.log(selectedFlight);
+      selectedFlight?.scrollIntoView({ block: "center", inline: "center" });
+    }
+  }, [flights.data]);
 
   return (
     <>
@@ -102,6 +113,7 @@ function FlightsListDisplay({
                                     <>
                                       <NavLink
                                         key={randomId()}
+                                        id={`${flight.id} navlink`}
                                         component={Link}
                                         to={`/logbook/flights/${flight.id}`}
                                         label={
@@ -296,9 +308,11 @@ export function MobileFlightsList() {
 
   const navigate = useNavigate();
 
+  const scrollAreaRef = useRef(null);
+
   return (
     <Stack p="0" m="0" justify="space-between" h="calc(100vh - 95px)">
-      <ScrollArea h="calc(100vh - 95px - 50px">
+      <ScrollArea h="calc(100vh - 95px - 50px" ref={scrollAreaRef}>
         <FlightsListDisplay flights={flights} page={page} />
       </ScrollArea>{" "}
       <Group grow preventGrowOverflow={false} wrap="nowrap">

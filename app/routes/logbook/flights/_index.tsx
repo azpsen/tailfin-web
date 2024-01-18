@@ -1,5 +1,5 @@
 import { Center, Container, Stack } from "@mantine/core";
-import { MobileFlightsList } from "@/routes/logbook.flights/flights-list";
+import { MobileFlightsList } from "@/routes/logbook/flights/flights-list";
 import { IconFeather } from "@tabler/icons-react";
 
 export default function Flights() {

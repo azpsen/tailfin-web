@@ -204,13 +204,17 @@ export default function Flight() {
                       <CollapsibleFieldset legend="Route" w="100%" mt="sm">
                         {log.waypoint_from || log.waypoint_to ? (
                           <Group grow>
-                            <VerticalLogItem
+                            <TextLogItem
                               label="From"
                               content={log.waypoint_from}
+                              id={params.id}
+                              field="waypoint_from"
                             />
-                            <VerticalLogItem
+                            <TextLogItem
                               label="To"
                               content={log.waypoint_to}
+                              id={params.id}
+                              field="waypoint_to"
                             />
                           </Group>
                         ) : null}
