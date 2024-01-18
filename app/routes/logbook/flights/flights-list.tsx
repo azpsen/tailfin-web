@@ -32,14 +32,12 @@ import { useEffect, useRef, useState } from "react";
 
 function FlightsListDisplay({
   flights,
-  page,
 }: {
   flights: UseQueryResult<{
     [year: string]: {
       [month: string]: { [day: string]: FlightConciseSchema[] };
     };
   }>;
-  page: string;
 }) {
   const monthNames = [
     "January",
@@ -180,7 +178,7 @@ function FlightsListDisplay({
                                             </Badge>
                                           ) : null
                                         }
-                                        active={page === flight.id}
+                                        active={params.id === flight.id}
                                       />
                                       <Divider />
                                     </>
@@ -287,9 +285,6 @@ export function FlightsList() {
 }
 
 export function MobileFlightsList() {
-  const location = useLocation();
-  const page = location.pathname.split("/")[3];
-
   const [aircraft, setAircraft] = useState("");
 
   const client = useApi();
@@ -313,7 +308,7 @@ export function MobileFlightsList() {
   return (
     <Stack p="0" m="0" justify="space-between" h="calc(100vh - 95px)">
       <ScrollArea h="calc(100vh - 95px - 50px" ref={scrollAreaRef}>
-        <FlightsListDisplay flights={flights} page={page} />
+        <FlightsListDisplay flights={flights} />
       </ScrollArea>{" "}
       <Group grow preventGrowOverflow={false} wrap="nowrap">
         <AircraftFilter aircraft={aircraft} setAircraft={setAircraft} />
